@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Building tiny Docker images with Docker build stages"
+title:  "Building tiny Docker images with multi-stage builds"
 date:   2018-08-11 18:42:00 +0300
 categories: docker tutorials
 ---
@@ -11,7 +11,7 @@ What can help us to get around those issues?
 
 Let's start with an example. Suppose we have a Python application that uses some crypto stuff and runs a web server inside of it.
 
-So here is our Dockerfile:
+So here is our `Dockerfile`:
 
 ```dockerfile
 # This base image contains stuff like OpenSSL and all of *-dev libraries
