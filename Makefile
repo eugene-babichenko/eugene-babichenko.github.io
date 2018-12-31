@@ -1,5 +1,7 @@
 .PHONY: run install
 
+all: run
+
 run:
 	bundle exec jekyll serve
 
