@@ -74,10 +74,6 @@ This part mostly repeats the [official guide][2] to CLion Remote Project.
    change the toolchain to the one you have added in the previous step.
 
    ![CLion custom toolchain configuration][image-2]
-1. Add a new SFTP deployment configuration. Just re-enter the SSH
-   credentials of the container here.
-
-   ![SFTP deployment configuration][image-3]
 1. Finally, wait for some time until CLion builds the index for the remote
    environment and switch to it in **Run Configurations**.
 
@@ -101,5 +97,4 @@ it.
 [4]: https://docs.docker.com/develop/develop-images/multistage-build/
 [image-1]: /assets/2018-12-31-clion-and-docker-image-1.png
 [image-2]: /assets/2018-12-31-clion-and-docker-image-2.png
-[image-3]: /assets/2018-12-31-clion-and-docker-image-3.png
 [image-4]: /assets/2018-12-31-clion-and-docker-image-4.png
