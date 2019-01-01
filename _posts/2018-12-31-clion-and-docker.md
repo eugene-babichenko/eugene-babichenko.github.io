@@ -91,6 +91,10 @@ it.
 
 - [C-program with CLion and Docker containers][3] -- for the general idea.
 
+## Useful links
+
+- [CLion Remote Projects][2]
+
 [1]: https://www.jetbrains.com/help/pycharm/using-docker-as-a-remote-interpreter.html
 [2]: https://www.jetbrains.com/help/clion/remote-projects-support.html
 [3]: http://ebagdasa.me/2017-01-20/docker-clion-debugging/
