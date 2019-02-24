@@ -13,6 +13,10 @@ think it would be good to share with you. Console utilities, hardware, whatever.
   installed. It also allows you to create your own correction rules.
 * [pjson](http://igorgue.com/pjson/). Reads JSON/XML inputs and gives you
   pretty-printed outputs. Especially good when combined with `curl`.
+* [pandoc](https://pandoc.org/index.html). A great tool to convert documents
+  from any format to any other format.
+* [wscat](https://github.com/websockets/wscat). A very simple utility to
+  debug WebSockets.
 
 ## Utilities with GUI
 
