@@ -26,6 +26,9 @@ think it would be good to share with you. Console utilities, hardware, whatever.
 * [Portainer](https://portainer.io). Just the best UI for Docker so far. Helps
   you manage containers, images, volumes and networks. Works pretty fast even
   though the UI is web-based.
+* [SmartGit](https://www.syntevo.com/smartgit/). The Git GUI client that works
+  best for me (especially when resolving merge conflicts). It may look dated but
+  definitely deserves some attention.
 
 ## zsh
 
