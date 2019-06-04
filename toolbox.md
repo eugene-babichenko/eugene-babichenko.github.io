@@ -44,3 +44,8 @@ think it would be good to share with you. Console utilities, hardware, whatever.
   for autocompletion in zsh.
 * [fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting).
   Good syntax highlighting system for zsh.
+
+## Other
+
+* [Fira Code](https://github.com/tonsky/FiraCode) – the best monospace font
+  with ligatures.
