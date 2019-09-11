@@ -30,6 +30,11 @@ think it would be good to share with you. Console utilities, hardware, whatever.
   best for me (especially when resolving merge conflicts). It may look dated but
   definitely deserves some attention.
 
+## Online services
+
+* [CiteThisForMe](https://www.citethisforme.com/). A resource for creating
+  bibliographies in a format required by a particular journal or a conference.
+
 ## zsh
 
 * [zsh](https://www.zsh.org) itself. The most convenient shell for me so far.
