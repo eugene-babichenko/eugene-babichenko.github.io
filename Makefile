@@ -5,5 +5,5 @@ all: run
 run:
 	bundle exec jekyll serve
 
-install:
+prepare:
 	bundle install --path vendor/bundle
