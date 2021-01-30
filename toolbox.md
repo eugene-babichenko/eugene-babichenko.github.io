@@ -29,6 +29,8 @@ think it would be good to share with you. Console utilities, hardware, whatever.
 * [SmartGit](https://www.syntevo.com/smartgit/). The Git GUI client that works
   best for me (especially when resolving merge conflicts). It may look dated but
   definitely deserves some attention.
+* [Insomnia](https://github.com/Kong/insomnia). A decent feature-rich UI for
+  HTTP requests. Much more lightweight than Postman.
 
 ## Online services
 
