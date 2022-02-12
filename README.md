@@ -11,15 +11,12 @@ To build the site:
 
 ## Local dependencies
 
-`sudo make prepare`
+    sudo make prepare
 
 ## Local server
 
-`make run`
+    make run
 
-## Using docker
+## Using nix
 
-```
-docker build . --tag githubio
-docker run --volume="$PWD:/src/jekyll" -p 4000:4000 -it githubio jekyll serve --host 0.0.0.0 --port 4000
-```
+    nix-shell serve.nix
