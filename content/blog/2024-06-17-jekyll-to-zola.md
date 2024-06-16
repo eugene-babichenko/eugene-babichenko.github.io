@@ -73,7 +73,7 @@ sed -i -e 's/ +0300/+03:00/g' content/blog/**/*.md
 ```
 
 If you have multiple timezones, just do that for these timezones as well. It can
-be done nices, but for me it was only two timezones, so I can't be bothered.
+be done nicer, but for me it was only two timezones, so I can't be bothered.
 
 Now we have the blog that works, but the permalinks are not the same and we need
 to fix that.
