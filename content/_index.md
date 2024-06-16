@@ -3,7 +3,17 @@
 
 # Eugene Babichenko
 
-My tips, tricks, and working notes will appear here.
+Building things for real people. Posting tips and tricks. Sharing thoughts on
+the software world.
+
+## Projects
+
+- [fixit](https://github.com/eugene-babichenko/fixit). A super quick utility
+  that fixes mistakes in your console commands. Inspired by
+  [The Fuck](https://github.com/nvbn/thefuck), but designed to be _much_ faster,
+  and to not have any additional dependencies like Python.
+- [rust-fsm](https://github.com/eugene-babichenko/rust-fsm). Self-documenting
+  macros for easy state machine design in Rust.
 
 ## Social contacts
 
