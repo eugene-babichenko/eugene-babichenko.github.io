@@ -168,6 +168,7 @@ all links in your templates are correct. I warned you.
 
 Anyway, here are the patches to fix links in Anemone:
 
+- [themes/anemone/templates/head.html](/patches/anemone-head.patch)
 - [themes/anemone/templates/blog-page.html](/patches/anemone-blog-page.patch)
 - [themes/anemone/templates/footer.html](/patches/anemone-footer.patch)
 
