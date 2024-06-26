@@ -1,6 +1,5 @@
 const toggleButton = document.getElementById('theme-toggle');
 const themeIcon = document.getElementById('theme-icon');
-const themeSound = document.getElementById('theme-sound');
 
 // Function to update the theme icon based on the current theme
 const updateThemeIcon = (isDarkMode) => {
@@ -20,7 +19,6 @@ const updateTheme = (isDarkMode) => {
 const toggleTheme = () => {
     const isDarkMode = toggleButton.checked;
     updateTheme(isDarkMode);
-    themeSound.play();
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
 
     // Add transition class to body for smooth transition

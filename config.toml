@@ -2,8 +2,8 @@ base_url = "https://eugene-babichenko.github.io"
 compile_sass = true
 build_search_index = false
 theme = "anemone"
-generate_feed = true
-feed_filename = "feed.xml"
+generate_feeds = true
+feed_filenames = ["feed.xml"]
 
 [markdown]
 highlight_code = true
