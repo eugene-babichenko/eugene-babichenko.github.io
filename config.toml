@@ -4,6 +4,10 @@ build_search_index = false
 theme = "anemone"
 generate_feeds = true
 feed_filenames = ["feed.xml"]
+title = "Eugene Babichenko"
+description = "Eugene's personal blog"
+minify_html = true
+author = "Eugene Babichenko"
 
 [markdown]
 highlight_code = true
