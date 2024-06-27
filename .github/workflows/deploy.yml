@@ -10,8 +10,19 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-      - name: build_and_deploy
-        uses: shalzz/zola-deploy-action@v0.17.2
+      - name: build and deploy
         env:
-          PAGES_BRANCH: gh-pages
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download --repo 'getzola/zola' --pattern '*-x86_64-unknown-linux-gnu.tar.gz'
+          tar -xvzf *-x86_64-unknown-linux-gnu.tar.gz
+          ./zola build
+          cd public
+          touch .nojekyll
+          git init
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions-bot@users.noreply.github.com'
+          git add -A
+          git commit -m 'deploy'
+          remote="https://$GITHUB_ACTOR:$GH_TOKEN@github.com/eugene-babichenko/eugene-babichenko.github.io"
+          git push --force $remote 'master:gh-pages'
