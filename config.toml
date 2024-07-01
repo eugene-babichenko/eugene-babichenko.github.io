@@ -17,5 +17,6 @@ list_pages = true
 header_nav = [
     { url = "/", name_en = "/home/" },
     { url = "/blog", name_en = "/blog/" },
-    { url = "https://github.com/eugene-babichenko", name_en = "/github/" }
+    { url = "https://github.com/eugene-babichenko", name_en = "/github/" },
+    { url = "https://standwithukraine.com.ua/", name_en = "/\U0001f1fa\U0001f1e6 Support Ukraine/" }
 ]
