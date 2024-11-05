@@ -1,0 +1,48 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="text/html; charset=UTF-8" http-equiv=content-type><meta content="width=device-width,initial-scale=1,user-scalable=no" name=viewport><meta content="index, follow" name=robots><title>How to force Rust compiler to use several x86 instructions (popcount, etc)</title><meta content="How to force Rust compiler to use several x86 instructions (popcount, etc)" name=title><meta content="Eugene's personal blog" name=description><meta content=website property=og:type><meta content=https://eugene-babichenko.github.io/blog/2019/11/13/rust-popcount-intrinsics/ property=og:url><meta content="Eugene Babichenko" property=og:site_name><meta content="How to force Rust compiler to use several x86 instructions (popcount, etc)" property=og:title><meta content="Eugene's personal blog" property=og:description><meta content=summary_large_image property=twitter:card><meta content=https://eugene-babichenko.github.io/blog/2019/11/13/rust-popcount-intrinsics/ property=twitter:url><meta content="How to force Rust compiler to use several x86 instructions (popcount, etc)" property=twitter:title><meta content="Eugene's personal blog" property=twitter:description><link href=https://eugene-babichenko.github.io/blog/2019/11/13/rust-popcount-intrinsics/ rel=canonical><link href=https://eugene-babichenko.github.io/feed.xml rel=alternate title=RSS type=application/atom+xml><link href=https://speyll.github.io/suCSS/reset-min.css rel=stylesheet><link href=https://speyll.github.io/suCSS/suCSS-min.css rel=stylesheet><link href=https://eugene-babichenko.github.io/css/style.css rel=stylesheet><script defer src=https://eugene-babichenko.github.io/js/script.js></script><script data-domain=eugene-babichenko.github.io defer src=https://plausible.io/js/script.js></script><body><header><nav id=nav-bar><a href=/> /home/ </a><a href=/blog> /blog/ </a><a href=https://github.com/eugene-babichenko> /github/ </a><a href=https://standwithukraine.com.ua/> /🇺🇦 Support Ukraine/ </a><div><input id=theme-toggle style=display:none type=checkbox><label for=theme-toggle id=theme-toggle-label><svg class=icons id=theme-icon><use href=https://eugene-babichenko.github.io/icons.svg#lightMode></use></svg></label></div></nav></header><main><div><a href=/blog>..</a>/<span class=accent-data>rust-popcount-intrinsics</span></div><time datetime=2019-11-13T21:00:00+02:00>Published on: <span class=accent-data>2019-11-13T21:00:00+02:00</span></time><h1>How to force Rust compiler to use several x86 instructions (popcount, etc)</h1><p>Sometimes you need tricky operations on your binary data like counting bits, leading or trailing zeros and so on (for example, when you want to implement <a href=https://en.wikipedia.org/wiki/Hash_array_mapped_trie>HAMT</a> or sparse arrays). In Rust this is achieved by using methods like <code>.count_ones()</code> and <code>.trailing_zeros()</code>. The problem with those methods is that they are usually expanded in a huge pile of assembler code. But x86 (and some other architectures) have instructions to perform these counts (specifically, <code>popcnt</code> and <code>tzcnt</code>) and they are really fast (<a href=https://software.intel.com/en-us/forums/intel-isa-extensions/topic/289168>1 cycle for execution and latency of 3 cycles</a>). Today we will learn how to force Rust compiler to use those instructions and what are the possible pitfalls.<p>Let's start with an example. Here's the code that finds population counts of random integers (<a href="https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=2551cbb6a41adad36e45bc50bf26c3bb">on Rust Playground</a>):<pre class=language-rust data-lang=rust style=color:#c0c5ce;background-color:#2b303b><code class=language-rust data-lang=rust><span style=color:#b48ead>use </span><span>rand::prelude::*;
+</span><span>
+</span><span style=color:#65737e>// this is only to have this function separately in the asm output
+</span><span>#[</span><span style=color:#bf616a>inline</span><span>(never)]
+</span><span style=color:#b48ead>fn </span><span style=color:#8fa1b3>count</span><span>(</span><span style=color:#bf616a>a</span><span>: </span><span style=color:#b48ead>u32</span><span>) -> </span><span style=color:#b48ead>u32 </span><span>{
+</span><span>    a.</span><span style=color:#96b5b4>count_ones</span><span>()
+</span><span>}
+</span><span>
+</span><span style=color:#b48ead>fn </span><span style=color:#8fa1b3>main</span><span>() {
+</span><span>    </span><span style=color:#b48ead>let</span><span> a: </span><span style=color:#b48ead>u32 </span><span>= </span><span style=color:#96b5b4>random</span><span>();
+</span><span>    println!("</span><span style=color:#d08770>{}</span><span>", </span><span style=color:#96b5b4>count</span><span>(a));
+</span><span>    println!("</span><span style=color:#d08770>{}</span><span>", </span><span style=color:#96b5b4>count</span><span>(a + </span><span style=color:#d08770>1</span><span>));
+</span><span>}
+</span></code></pre><p>And the <code>count</code> function looks like that:<pre style=color:#c0c5ce;background-color:#2b303b><code><span>playground::count:
+</span><span>	mov	eax, edi
+</span><span>	shr	eax
+</span><span>	and	eax, 1431655765
+</span><span>	sub	edi, eax
+</span><span>	mov	eax, edi
+</span><span>	and	eax, 858993459
+</span><span>	shr	edi, 2
+</span><span>	and	edi, 858993459
+</span><span>	add	edi, eax
+</span><span>	mov	eax, edi
+</span><span>	shr	eax, 4
+</span><span>	add	eax, edi
+</span><span>	and	eax, 252645135
+</span><span>	imul	eax, eax, 16843009
+</span><span>	shr	eax, 24
+</span><span>	ret
+</span></code></pre><p>Wow. A huge pile of instructions and magic numbers. This is clearly not something we would like to see, especially in performance-critical places. Let's make this a little bit better (<a href="https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=a91e315224c79f2d6c72bb85d3fdfe2d">on Rust Playground</a>):<pre class=language-rust data-lang=rust style=color:#c0c5ce;background-color:#2b303b><code class=language-rust data-lang=rust><span style=color:#b48ead>use </span><span>rand::prelude::*;
+</span><span>
+</span><span style=color:#65737e>// this is only to have this function separately in the asm output
+</span><span>#[</span><span style=color:#bf616a>inline</span><span>(never)]
+</span><span>#[</span><span style=color:#bf616a>cfg_attr</span><span>(target_arch = "</span><span style=color:#a3be8c>x86_64</span><span>", </span><span style=color:#bf616a>target_feature</span><span>(enable = "</span><span style=color:#a3be8c>popcnt</span><span>"))]
+</span><span style=color:#b48ead>unsafe fn </span><span style=color:#8fa1b3>count</span><span>(</span><span style=color:#bf616a>a</span><span>: </span><span style=color:#b48ead>u32</span><span>) -> </span><span style=color:#b48ead>u32 </span><span>{
+</span><span>    a.</span><span style=color:#96b5b4>count_ones</span><span>()
+</span><span>}
+</span><span>
+</span><span style=color:#b48ead>fn </span><span style=color:#8fa1b3>main</span><span>() {
+</span><span>    </span><span style=color:#b48ead>let</span><span> a: </span><span style=color:#b48ead>u32 </span><span>= </span><span style=color:#96b5b4>random</span><span>();
+</span><span>    println!("</span><span style=color:#d08770>{}</span><span>", </span><span style=color:#b48ead>unsafe </span><span>{ </span><span style=color:#96b5b4>count</span><span>(a) });
+</span><span>    println!("</span><span style=color:#d08770>{}</span><span>", </span><span style=color:#b48ead>unsafe </span><span>{ </span><span style=color:#96b5b4>count</span><span>(a + </span><span style=color:#d08770>1</span><span>) });
+</span><span>}
+</span></code></pre><p>And here is the assembly code of <code>count</code>:<pre style=color:#c0c5ce;background-color:#2b303b><code><span>playground::count:
+</span><span>	popcnt	eax, edi
+</span><span>	ret
+</span></code></pre><p>Only a single <a href=https://software.intel.com/en-us/forums/intel-isa-extensions/topic/289168>very fast</a> instruction! And that this will work with all integer types. There is a pitfall though: Rust requires us to mark functions as <code>unsafe</code> when we use <code>target_feature</code> so it makes sense to make functions using those features as small as possible.<p>Also, you can do something similar with <code>.trailing_zeros()</code> or <code>.leading_zeros()</code> by using <code>target_feature(enable = "bmi1")</code>.<p>To find feature names you can refer to architecture-specific <a href=https://doc.rust-lang.org/std/intrinsics/index.html>intrinsics documentation</a>.<p>That's all, hope you find it useful!<p class=tags-data></p><script async crossorigin issue-term=pathname repo=eugene-babichenko/eugene-babichenko.github.io src=https://utteranc.es/client.js theme=preferred-color-scheme></script></main><footer><hr><div id=footer-container><div><p>Theme and color theme licensed under <a rel="noopener noreferrer" href=https://en.wikipedia.org/wiki/Licence_MIT target=_blank>MIT</a>.<br> Built with <a rel="noopener noreferrer" href=https://www.getzola.org target=_blank>Zola</a> using <a rel="noopener noreferrer" href=https://github.com/Speyll/anemone target=_blank>anemone</a> theme, <a rel="noopener noreferrer" href=https://speyll.github.io/suCSS/ target=_blank>suCSS</a> framework & <a rel="noopener noreferrer" href=https://github.com/Speyll/veqev target=_blank>veqev</a>.<br></div><div><a rel="noopener noreferrer" title="Subscribe via RSS for updates." class=no-style href=https://eugene-babichenko.github.io/feed.xml target=_blank><svg class=icons><use href=https://eugene-babichenko.github.io/icons.svg#rss></use></svg></a></div></div></footer>

@@ -1,0 +1,6 @@
+89c89
+< <link rel="alternate" type="application/atom+xml" title="RSS" href="{{ get_url(path="atom.xml", trailing_slash=false) }}"> 
+---
+> <link rel="alternate" type="application/atom+xml" title="RSS" href="{{ get_url(path="feed.xml", trailing_slash=false) }}"> 
+98d97
+< 
