@@ -159,6 +159,9 @@ su runner -c '
     git clone ssh://aur@aur.archlinux.org/<your-package>.git aur
 
     ./generate-pkgbuild $VERSION
+    makepkg --printsrcinfo > .SRCINFO
+    makepkg
+    makepkg --install
 
     cp PKGBUILD .SRCINFO aur/
     cd aur
