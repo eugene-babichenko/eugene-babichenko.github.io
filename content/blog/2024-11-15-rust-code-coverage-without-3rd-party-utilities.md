@@ -113,7 +113,7 @@ code coverage services like [Coveralls](https://coveralls.io/) (unfortunately,
 they don't pay me). These things are nice, because they give everyone a shared
 look into the code coverage data retrieved in a controlled environment (e.g.
 CI). For Coveralls we would need to convert out `.profdata` into something that
-Coveralls can actually consumed. I went with `lcov` and this is a rather simple
+Coveralls can actually consume. I went with `lcov` and this is a rather simple
 conversion:
 
 ```bash
