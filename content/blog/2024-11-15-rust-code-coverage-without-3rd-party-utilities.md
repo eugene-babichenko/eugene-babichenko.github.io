@@ -1,12 +1,12 @@
 +++
 title = "Rust code coverage without 3rd party utilities"
-date = 2024-11-15T21:05:53+02:00
+date = 2024-11-15T22:00:00+02:00
 [extra]
 toc = true
 +++
 
-Today I got fed up with my CI being slow and dealing with overall clunkiness of
-coverage software. So I decided to finally give a read to the amazing
+Today I got fed up with my CI being slow and dealing with 3rd party software. So
+I decided to finally give a read to the amazing
 ["Instrumentation-based Code Coverage"](https://doc.rust-lang.org/rustc/instrument-coverage.html)
 article from the rustc book. And while it is pretty exhaustive, some parts of it
 are not very up to date, some may be done nicer (e.g. without the use of 3rd
