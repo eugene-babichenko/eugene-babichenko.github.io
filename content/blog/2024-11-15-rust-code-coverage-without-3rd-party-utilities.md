@@ -52,19 +52,13 @@ may be present in your system. And I am not against convenience, but when
 running inside of CI this convenience becomes a liability: this is something
 that takes time to install and is a potential security hole.
 
-So, after some digging on my own machine I found these tools residing at
-`~/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/bin/`.
-After a bit of digging and talking to Claude, I came up with this abomination to
-add the tools to `PATH`:
+So, after a couple of iterations and with the help of the power of Reddit I have
+this
+([this comment](https://www.reddit.com/r/rust/comments/1gs5jyl/comment/lxczfok/)):
 
 ```bash
-toolchain="$(grep '^default_toolchain' $HOME/.rustup/settings.toml | cut -d'"' -f2)"
-PATH="$HOME/.rustup/toolchains/$toolchain/lib/rustlib/${toolchain#*-}/bin:$PATH"
+PATH="$(rustc --print=target-libdir)/../bin:$PATH"
 ```
-
-It just takes the name of the currently active toolchain and finds the directory
-where the `llvm-tools` component lives. If you need to adjust it to support
-multiple toolchains, I'll leave it up to you.
 
 With that out of the way, we can finally build the needed file:
 
