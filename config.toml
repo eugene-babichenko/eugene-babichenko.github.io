@@ -13,6 +13,7 @@ author = "Eugene Babichenko"
 highlight_code = true
 
 [extra]
+favicon = "favicon.ico"
 list_pages = true
 header_nav = [
     { url = "/", name_en = "/home/" },
