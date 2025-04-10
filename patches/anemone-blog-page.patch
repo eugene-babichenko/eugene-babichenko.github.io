@@ -1,0 +1,4 @@
+4c4
+< <div><a href="..">..</a>/<span class="accent-data">{{ page.slug }}</span></div>
+---
+> <div><a href="/blog">..</a>/<span class="accent-data">{{ page.slug }}</span></div>
