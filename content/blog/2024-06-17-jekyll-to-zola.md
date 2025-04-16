@@ -163,6 +163,8 @@ Woohoo, you are set! Almost...
 
 ## Fixing links in Anemone
 
+**UPD 2025-04-16**: this is not needed in the latest Anemone versions.
+
 If you are using Anemone, this section is for you. If you don't, do check that
 all links in your templates are correct. I warned you.
 

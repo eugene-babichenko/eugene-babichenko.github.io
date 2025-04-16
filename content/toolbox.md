@@ -1,5 +1,6 @@
 ---
 title: "My toolbox"
+date: "2024-06-16"
 ---
 
 This page will serve to collect small (or not so small) things I like to use and

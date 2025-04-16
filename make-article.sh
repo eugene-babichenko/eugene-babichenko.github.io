@@ -7,7 +7,7 @@ echo -n "Needs TOC? (y/n) "
 read toc
 
 fn_date="$(date +%Y-%m-%d)"
-fn_title="$(echo "$title" | tr ' ' - | tr '[:upper:]' '[:lower:]' | tr -cd '[:alnum:]_-')"
+fn_title="$(echo "$title" | tr ' ' - | tr '[:upper:]' '[:lower:]' | tr -cd '[:alnum:]_-' | tr -s '-')"
 filename="content/blog/$fn_date-$fn_title.md"
 
 tz=$(date +%z)
