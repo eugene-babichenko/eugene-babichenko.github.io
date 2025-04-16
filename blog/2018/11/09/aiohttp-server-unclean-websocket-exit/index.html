@@ -1,0 +1,41 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="width=device-width,initial-scale=1.0" name=viewport><meta content="index, follow" name=robots><link href=https://eugene-babichenko.github.io/rss.xml rel=alternate title=RSS type=application/rss+xml><title>Eugene Babichenko | Finishing aiohttp websocket handlers cleanly when a client closed a socket incorrectly</title><link as=style href=https://eugene-babichenko.github.io/css/style.css rel=preload><link crossorigin href=https://raw.githack.com/Speyll/suCSS/main/reset-min.css rel=stylesheet><link crossorigin href=https://raw.githack.com/Speyll/suCSS/main/suCSS-min.css rel=stylesheet><link href=https://eugene-babichenko.github.io/css/style.css rel=stylesheet><link href=https://eugene-babichenko.github.io/css/custom.css rel=stylesheet><link href=https://eugene-babichenko.github.io/favicon.ico rel=icon><body><nav id=nav-bar><a href=/> /home/ </a><a href=/blog> /blog/ </a><a href=https://github.com/eugene-babichenko> /github/ </a><a href=https://standwithukraine.com.ua/> /🇺🇦 Support Ukraine/ </a><div aria-label="Toggle theme" class=theme-toggle data-icon-base=https://eugene-babichenko.github.io/icons.svg data-icon-dark=#darkMode data-icon-light=#lightMode data-sound-src=https://eugene-babichenko.github.io/click.ogg id=theme-toggle role=button tabindex=0><svg class=icon><use id=theme-icon></use></svg></div></nav><main><article class=post><header class=post-header><time datetime=2018-11-09T13:00:00+03:00>Published on: <span class=accent-data>2018-11-09</span> </time><h1>Finishing aiohttp websocket handlers cleanly when a client closed a socket incorrectly</h1></header><div class=post-content><p>You might have noticed that there may be some troubles when an aiohttp was not closed by a client in a clean way. When you follow the aiohttp <a href=https://docs.aiohttp.org/en/stable/web_quickstart.html#websockets>official guide</a> on websockets but errors are not processed in the right way. Here's a little trick that might help you with that.<p>So let's recall the aiohttp example:<pre class=language-python data-lang=python style=color:#c0c5ce;background-color:#2b303b><code class=language-python data-lang=python><span style=color:#b48ead>async def </span><span style=color:#8fa1b3>websocket_handler</span><span>(</span><span style=color:#bf616a>request</span><span>):
+</span><span>
+</span><span>    ws = web.</span><span style=color:#bf616a>WebSocketResponse</span><span>()
+</span><span>    </span><span style=color:#b48ead>await </span><span>ws.</span><span style=color:#bf616a>prepare</span><span>(request)
+</span><span>
+</span><span>    </span><span style=color:#b48ead>async for </span><span>msg </span><span style=color:#b48ead>in </span><span>ws:
+</span><span>        </span><span style=color:#b48ead>if </span><span>msg.type == aiohttp.WSMsgType.</span><span style=color:#bf616a>TEXT</span><span>:
+</span><span>            </span><span style=color:#b48ead>if </span><span>msg.data == '</span><span style=color:#a3be8c>close</span><span>':
+</span><span>                </span><span style=color:#b48ead>await </span><span>ws.</span><span style=color:#bf616a>close</span><span>()
+</span><span>            </span><span style=color:#b48ead>else</span><span>:
+</span><span>                </span><span style=color:#b48ead>await </span><span>ws.</span><span style=color:#bf616a>send_str</span><span>(msg.data + '</span><span style=color:#a3be8c>/answer</span><span>')
+</span><span>        </span><span style=color:#b48ead>elif </span><span>msg.type == aiohttp.WSMsgType.</span><span style=color:#bf616a>ERROR</span><span>:
+</span><span>            </span><span style=color:#96b5b4>print</span><span>('</span><span style=color:#a3be8c>ws connection closed with exception </span><span style=color:#d08770>%s</span><span>' %
+</span><span>                  ws.</span><span style=color:#bf616a>exception</span><span>())
+</span><span>
+</span><span>    </span><span style=color:#96b5b4>print</span><span>('</span><span style=color:#a3be8c>websocket connection closed</span><span>')
+</span><span>
+</span><span>    </span><span style=color:#b48ead>return </span><span>ws
+</span></code></pre><p>Seems like nothing is wrong with that except you don’t receive an appropriate error message and it looks like code after the loop is never executed if just terminate a client app without properly closing the socket.<p>The tricky part here is that when your websocket was closed uncleanly you get the <code>asyncio.CancelledError</code>. So all you need to perform the code after the loop is to wrap the loop in a try-except statement:<pre class=language-python data-lang=python style=color:#c0c5ce;background-color:#2b303b><code class=language-python data-lang=python><span style=color:#b48ead>async def </span><span style=color:#8fa1b3>websocket_handler</span><span>(</span><span style=color:#bf616a>request</span><span>):
+</span><span>
+</span><span>    ws = web.</span><span style=color:#bf616a>WebSocketResponse</span><span>()
+</span><span>    </span><span style=color:#b48ead>await </span><span>ws.</span><span style=color:#bf616a>prepare</span><span>(request)
+</span><span>
+</span><span>    </span><span style=color:#b48ead>try</span><span>:
+</span><span>        </span><span style=color:#b48ead>async for </span><span>msg </span><span style=color:#b48ead>in </span><span>ws:
+</span><span>            </span><span style=color:#b48ead>if </span><span>msg.type == aiohttp.WSMsgType.</span><span style=color:#bf616a>TEXT</span><span>:
+</span><span>                </span><span style=color:#b48ead>if </span><span>msg.data == '</span><span style=color:#a3be8c>close</span><span>':
+</span><span>                    </span><span style=color:#b48ead>await </span><span>ws.</span><span style=color:#bf616a>close</span><span>()
+</span><span>                </span><span style=color:#b48ead>else</span><span>:
+</span><span>                    </span><span style=color:#b48ead>await </span><span>ws.</span><span style=color:#bf616a>send_str</span><span>(msg.data + '</span><span style=color:#a3be8c>/answer</span><span>')
+</span><span>            </span><span style=color:#b48ead>elif </span><span>msg.type == aiohttp.WSMsgType.</span><span style=color:#bf616a>ERROR</span><span>:
+</span><span>                </span><span style=color:#96b5b4>print</span><span>('</span><span style=color:#a3be8c>ws connection closed with exception </span><span style=color:#d08770>%s</span><span>' %
+</span><span>                      ws.</span><span style=color:#bf616a>exception</span><span>())
+</span><span>    </span><span style=color:#b48ead>except </span><span>asyncio.CancelledError:
+</span><span>        </span><span style=color:#96b5b4>print</span><span>('</span><span style=color:#a3be8c>Unclean exit by the client</span><span>')
+</span><span>
+</span><span>    </span><span style=color:#65737e># Now this is always executed
+</span><span>    </span><span style=color:#96b5b4>print</span><span>('</span><span style=color:#a3be8c>websocket connection closed</span><span>')
+</span><span>
+</span><span>    </span><span style=color:#b48ead>return </span><span>ws
+</span></code></pre></div></article></main><footer><hr><div id=footer-container><p>Made using <a rel="noopener noreferrer" href=https://github.com/Speyll/anemone target=_blank>anemone</a> Zola theme.<p><a title="face icons" href=https://www.flaticon.com/free-icons/face>Face icons created by Freepik - Flaticon</a><p>© 2018-2025 Eugene Babichenko</div></footer><script defer src=https://eugene-babichenko.github.io/js/script.js></script>

@@ -1,0 +1,1658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Eugene Babichenko</title>
+    <subtitle>Eugene&#x27;s personal blog</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://eugene-babichenko.github.io/feed.xml"/>
+    <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-04-15T16:44:55+03:00</updated>
+    <id>https://eugene-babichenko.github.io/feed.xml</id>
+    <entry xml:lang="en">
+        <title>stow thy dotfiles</title>
+        <published>2025-04-15T16:44:55+03:00</published>
+        <updated>2025-04-15T16:44:55+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/stow-thy-dotfiles/"/>
+        <id>https://eugene-babichenko.github.io/blog/stow-thy-dotfiles/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/stow-thy-dotfiles/">&lt;p&gt;I have a lot of dotfiles. Initially, I managed them using symlinks, but
+maintaining a bunch of symlinks by hand is a bit tedious. Then I tried using
+stuff like YADM and chezmoi and was left disappointed. They are just a bit too
+complicated for a simple task of managing a bunch of configuration files and
+keeping them accessible from the right location.&lt;&#x2F;p&gt;
+&lt;p&gt;So, symlinks. But instead of managing them by hand, manage them with GNU Stow.
+This is a simple tool, that just takes your files and symlinks them where they
+need to be.&lt;&#x2F;p&gt;
+&lt;p&gt;This is the structure of my repo with dotfiles:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;.config
+&lt;&#x2F;span&gt;&lt;span&gt;├── bat
+&lt;&#x2F;span&gt;&lt;span&gt;├── fish
+&lt;&#x2F;span&gt;&lt;span&gt;├── mpv
+&lt;&#x2F;span&gt;&lt;span&gt;├── tmux
+&lt;&#x2F;span&gt;&lt;span&gt;├── wezterm
+&lt;&#x2F;span&gt;&lt;span&gt;└── yazi
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;It essentially emulates the actual structure what is happening in the home
+directory. Install GNU Stow and run &lt;code&gt;stow -t $HOME .&lt;&#x2F;code&gt; and everything gets
+symlinked to where it needs to be. Magic. One thing done right without stupid
+back and forth. You open the file from the repo, you open it from
+&lt;code&gt;~&#x2F;.config&#x2F;...&lt;&#x2F;code&gt;, doesn&#x27;t matter, the change will apply regardless. The
+embodiment of the UNIX philosphy. And then you just manage it with git. Want
+something automatically encrypted in that repo? There are tools for that, and
+they are good at it.&lt;&#x2F;p&gt;
+&lt;p&gt;That&#x27;s it, that&#x27;s peak configuration management.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>.env.local (and .env.* in general) syntax highlighting in Neovim</title>
+        <published>2025-04-10T00:00:00+00:00</published>
+        <updated>2025-04-10T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/neovim-env-filetype/"/>
+        <id>https://eugene-babichenko.github.io/blog/neovim-env-filetype/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/neovim-env-filetype/">&lt;p&gt;Some development tooling use a rather unusual (to my taste) style of separating
+&lt;code&gt;.env&lt;&#x2F;code&gt; files for different environments. Instead of doing &lt;code&gt;.local.env&lt;&#x2F;code&gt; leaving
+the &lt;code&gt;.env&lt;&#x2F;code&gt; file extension in the end of a filename like I would do, they go with
+&lt;code&gt;.env.local&lt;&#x2F;code&gt;, &lt;code&gt;.env.prod&lt;&#x2F;code&gt;, etc.&lt;&#x2F;p&gt;
+&lt;p&gt;Neovim would normally highlight these with the &lt;code&gt;sh&lt;&#x2F;code&gt; filetype, but it requires
+&lt;code&gt;.env&lt;&#x2F;code&gt; to be the actual file extension.&lt;&#x2F;p&gt;
+&lt;p&gt;To fix this, add the following to your Neovim config (assuming the use of Lua):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;lua&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-lua &quot;&gt;&lt;code class=&quot;language-lua&quot; data-lang=&quot;lua&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vim&lt;&#x2F;span&gt;&lt;span&gt;.filetype.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;({
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;pattern &lt;&#x2F;span&gt;&lt;span&gt;= {
+&lt;&#x2F;span&gt;&lt;span&gt;    [&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.env.*&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;] = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sh&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;  },
+&lt;&#x2F;span&gt;&lt;span&gt;})
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Rust code coverage without 3rd party utilities</title>
+        <published>2024-11-15T22:00:00+02:00</published>
+        <updated>2024-11-15T22:00:00+02:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/rust-code-coverage-without-3rd-party-utilities/"/>
+        <id>https://eugene-babichenko.github.io/blog/rust-code-coverage-without-3rd-party-utilities/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/rust-code-coverage-without-3rd-party-utilities/">&lt;p&gt;Today I got fed up with my CI being slow and dealing with 3rd party software. So
+I decided to finally give a read to the amazing
+&lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;rustc&#x2F;instrument-coverage.html&quot;&gt;&quot;Instrumentation-based Code Coverage&quot;&lt;&#x2F;a&gt;
+article from the rustc book. And while it is pretty exhaustive, some parts of it
+are not very up to date, some may be done nicer (e.g. without the use of 3rd
+party tools in your CI), and some important practical aspects are not covered by
+it at all (interfacing with code coverage services). So let&#x27;s dive into it!&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-basics&quot;&gt;The Basics&lt;&#x2F;h2&gt;
+&lt;p&gt;The entire approach is built around LLVM
+&lt;a href=&quot;https:&#x2F;&#x2F;clang.llvm.org&#x2F;docs&#x2F;SourceBasedCodeCoverage.html&quot;&gt;source-based code coverage instrumentation&lt;&#x2F;a&gt;.
+This thing is fairly straightforward: you add a flag when building your program
+and when you run it, it outputs the profiling information. For Rust it is done
+like that:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;export &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RUSTFLAGS&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-C instrument-coverage&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; test &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# or cargo build, or cargo run
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;If you check your project directory after running this, you will see one more
+files that look like this:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;default_16297040162499240015_0_10889.profraw
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;These are outputs from the profiler instrumentation that got built into your
+application and test binaries.&lt;&#x2F;p&gt;
+&lt;p&gt;By themselves, they are not of much use and we need to generate a &lt;em&gt;profile data
+file&lt;&#x2F;em&gt;. For that, we need the tools:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rustup&lt;&#x2F;span&gt;&lt;span&gt; component add llvm-tools
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;In theory, we could use the tools that come with the standard LLVM distribution.
+But we have something guaranteed to work with what rustc produces, so why
+bother? Anyway, at this point the rustc book recommends us to install
+&lt;code&gt;cargo-binutils&lt;&#x2F;code&gt;. This tool is needed because &lt;code&gt;llvm-tools&lt;&#x2F;code&gt; don&#x27;t get exposed via
+the &lt;code&gt;PATH&lt;&#x2F;code&gt; variable to avoid conflicts with the actual LLVM installation that
+may be present in your system. And I am not against convenience, but when
+running inside of CI this convenience becomes a liability: this is something
+that takes time to install and is a potential security hole.&lt;&#x2F;p&gt;
+&lt;p&gt;So, after a couple of iterations and with the help of the power of Reddit I have
+this
+(&lt;a href=&quot;https:&#x2F;&#x2F;www.reddit.com&#x2F;r&#x2F;rust&#x2F;comments&#x2F;1gs5jyl&#x2F;comment&#x2F;lxczfok&#x2F;&quot;&gt;this comment&lt;&#x2F;a&gt;):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PATH&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rustc --print&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;target-libdir)&#x2F;..&#x2F;bin:&lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PATH&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;With that out of the way, we can finally build the needed file:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;llvm-profdata&lt;&#x2F;span&gt;&lt;span&gt; merge&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -sparse&lt;&#x2F;span&gt;&lt;span&gt; default_*.profraw&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -o&lt;&#x2F;span&gt;&lt;span&gt; tests.profdata
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And &lt;code&gt;tests.profdata&lt;&#x2F;code&gt; is going to be the source of any visualization we want to
+do.&lt;&#x2F;p&gt;
+&lt;p&gt;First, let&#x27;s try and output a simple table with code coverage data per file and
+a summary per the rustc book recommendations:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;llvm-cov&lt;&#x2F;span&gt;&lt;span&gt; report&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --use-color --ignore-filename-regex&lt;&#x2F;span&gt;&lt;span&gt;=&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;.cargo&#x2F;registry&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -instr-profile&lt;&#x2F;span&gt;&lt;span&gt; tests.profdata $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;objects
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;But hey, what is this &lt;code&gt;objects&lt;&#x2F;code&gt; variable? Well, you need to list the test
+binaries in the format of &lt;code&gt;--object &amp;lt;binary&amp;gt;&lt;&#x2F;code&gt;. And this is our second deviation
+from the rustc book, since their recommendation simply doesn&#x27;t work. So this is
+what I came up with:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;objects&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; test&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --no-run --message-format&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;json &lt;&#x2F;span&gt;&lt;span&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;jq -r &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;select(.profile.test == true) | .filenames[] | &amp;quot;--object &amp;quot; + .&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; | &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tr &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; &amp;#39; &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;What this line does is:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Take the json output of &lt;code&gt;cargo test&lt;&#x2F;code&gt; without actually running the tests.&lt;&#x2F;li&gt;
+&lt;li&gt;Extract the names of the test binaries adding the &lt;code&gt;--object&lt;&#x2F;code&gt; flag in the
+process.&lt;&#x2F;li&gt;
+&lt;li&gt;Turn it into a single line.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Yes, yes, I can hear you. I promised &quot;no third party tools&quot; and now &lt;code&gt;jq&lt;&#x2F;code&gt; pops
+up. But it is included in the GitHub Actions environment out of the box and
+almost everyone has it installed anyway, so that doesn&#x27;t count 😜.&lt;&#x2F;p&gt;
+&lt;p&gt;Now that we have &lt;code&gt;objects&lt;&#x2F;code&gt;, we can run &lt;code&gt;llvm-cov&lt;&#x2F;code&gt; and see a nice table with our
+coverage data. I&#x27;ll leave it up to you to figure out generating nice and shiny
+HTML reports.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;lcov-and-interfacing-with-code-coverage-services&quot;&gt;&lt;code&gt;lcov&lt;&#x2F;code&gt; and interfacing with code coverage services&lt;&#x2F;h2&gt;
+&lt;p&gt;Now, let&#x27;s get to another thing not covered by the rustc book: interfacing with
+code coverage services like &lt;a href=&quot;https:&#x2F;&#x2F;coveralls.io&#x2F;&quot;&gt;Coveralls&lt;&#x2F;a&gt; (unfortunately,
+they don&#x27;t pay me). These things are nice, because they give everyone a shared
+look into the code coverage data retrieved in a controlled environment (e.g.
+CI). For Coveralls we would need to convert out &lt;code&gt;.profdata&lt;&#x2F;code&gt; into something that
+Coveralls can actually consume. I went with &lt;code&gt;lcov&lt;&#x2F;code&gt; and this is a rather simple
+conversion:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;llvm-cov&lt;&#x2F;span&gt;&lt;span&gt; export&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -format&lt;&#x2F;span&gt;&lt;span&gt;=lcov&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -instr-profile&lt;&#x2F;span&gt;&lt;span&gt; tests.profdata $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;objects -sources&lt;&#x2F;span&gt;&lt;span&gt; src&#x2F;{,**&#x2F;}*.rs &amp;gt; tests.lcov
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;In GitHub Actions we can just use the Coveralls action with the default setup:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;yaml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yaml &quot;&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Upload coverage report
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;coverallsapp&#x2F;github-action@v2
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;with&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;github-token&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${{ secrets.GITHUB_TOKEN }}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Publishing AUR packages from GitHub Actions</title>
+        <published>2024-11-05T00:00:00+00:00</published>
+        <updated>2024-11-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/github-actions-aur/"/>
+        <id>https://eugene-babichenko.github.io/blog/github-actions-aur/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/github-actions-aur/">&lt;p&gt;In this post we will discuss automated publishing of updates to AUR packages
+from GitHub Actions.&lt;&#x2F;p&gt;
+&lt;p&gt;The live and slightly more complicated version of this can be seen at
+https:&#x2F;&#x2F;github.com&#x2F;eugene-babichenko&#x2F;fixit&#x2F;blob&#x2F;master&#x2F;.github&#x2F;workflows&#x2F;release.yml&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;prerequisites&quot;&gt;Prerequisites&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;You already have an AUR repository.&lt;&#x2F;li&gt;
+&lt;li&gt;You are somewhat familiar with GitHub Actions.&lt;&#x2F;li&gt;
+&lt;li&gt;You have a script that generates the &lt;code&gt;PKGBUILD&lt;&#x2F;code&gt; file for your releases. Here
+we will refer to it as &lt;code&gt;.&#x2F;generate-pkgbuild&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;You tag your releases in the format of &lt;code&gt;v&amp;lt;version_number&amp;gt;&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;setting-up-ssh-keys&quot;&gt;Setting up SSH keys&lt;&#x2F;h2&gt;
+&lt;p&gt;It&#x27;s better to have a separate SSH key for your automation, so let&#x27;s generate
+it:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ssh-keygen -t&lt;&#x2F;span&gt;&lt;span&gt; ed25519&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -f&lt;&#x2F;span&gt;&lt;span&gt; github-aur
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now let&#x27;s add this key to your AUR account. Go to https:&#x2F;&#x2F;aur.archlinux.org&#x2F;,
+log in, click on &quot;My Account&quot; and in &quot;SSH Public Key&quot; add a new line with your
+new public key:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cat&lt;&#x2F;span&gt;&lt;span&gt; github-aur.pub
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now we have to deal with the secret key. Go to
+&lt;code&gt;https:&#x2F;&#x2F;github.com&#x2F;&amp;lt;username&amp;gt;&#x2F;&amp;lt;repo&amp;gt;&#x2F;settings&#x2F;secrets&#x2F;actions&lt;&#x2F;code&gt; and add a new
+secret named &lt;code&gt;AUR_SSH_KEY&lt;&#x2F;code&gt; and paste the contents of our private key here:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cat&lt;&#x2F;span&gt;&lt;span&gt; github-aur
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;the-scripting&quot;&gt;The scripting&lt;&#x2F;h2&gt;
+&lt;p&gt;We are going to run our stuff inside an Arch Linux docker container. I&#x27;ll show
+how to set that up later. For now, let&#x27;s deal with the script.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;installing-dependencies&quot;&gt;Installing dependencies&lt;&#x2F;h3&gt;
+&lt;p&gt;First, let&#x27;s install our dependencies (add any other dependencies here as well):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pacman -Syu --noconfirm
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pacman -S --noconfirm&lt;&#x2F;span&gt;&lt;span&gt; openssh git
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And now some trickery. We would need to use &lt;code&gt;makepkg&lt;&#x2F;code&gt; which cannot run under
+root. And this is everything the container would provide to us. So let&#x27;s create
+a user first:&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;dealing-with-users&quot;&gt;Dealing with users&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;useradd -m -G&lt;&#x2F;span&gt;&lt;span&gt; wheel runner
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# We need everything to be passwordless
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;%wheel ALL=(ALL) NOPASSWD: ALL&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt;&amp;gt; &#x2F;etc&#x2F;sudoers
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now let&#x27;s transfer the ownership of our files to our new user:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chown -R&lt;&#x2F;span&gt;&lt;span&gt; runner:runner .
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;From now on everything is going to be run under &lt;code&gt;su runner -c &#x27;...&#x27;&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;ssh-configuration&quot;&gt;SSH configuration&lt;&#x2F;h3&gt;
+&lt;p&gt;First, install our key into the system:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mkdir -p ~&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;.ssh
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;{ secrets.AUR_SSH_KEY &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;}}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;~&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;.ssh&#x2F;aur
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Set the correct permissions for the key
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chmod&lt;&#x2F;span&gt;&lt;span&gt; 600 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;~&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;.ssh&#x2F;aur
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Then, set up the SSH config:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Host aur.archlinux.org&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;~&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;.ssh&#x2F;config
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;  IdentityFile ~&#x2F;.ssh&#x2F;aur&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;~&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;.ssh&#x2F;config
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;  User aur&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;~&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;.ssh&#x2F;config
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And finally, add AUR to &lt;code&gt;known_hosts&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ssh-keyscan -H&lt;&#x2F;span&gt;&lt;span&gt; aur.archlinux.org &amp;gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;~&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;.ssh&#x2F;known_hosts
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;pushing-the-actual-update&quot;&gt;Pushing the actual update&lt;&#x2F;h3&gt;
+&lt;p&gt;Next, clone your AUR repo:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; clone ssh:&#x2F;&#x2F;aur@aur.archlinux.org&#x2F;&amp;lt;package_name&amp;gt;.git aur
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Generate &lt;code&gt;PKGBUILD&lt;&#x2F;code&gt;, &lt;code&gt;.SRCINFO&lt;&#x2F;code&gt; and test your package:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Grab the version number from the git tag
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION&lt;&#x2F;span&gt;&lt;span&gt;=$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GITHUB_REF&lt;&#x2F;span&gt;&lt;span&gt;#&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;refs&#x2F;tags&#x2F;v}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;.&#x2F;generate-pkgbuild &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;makepkg --printsrcinfo &lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; .SRCINFO
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;makepkg
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;makepkg --install
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Set up git and push our updated package:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cp&lt;&#x2F;span&gt;&lt;span&gt; PKGBUILD .SRCINFO aur&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cd&lt;&#x2F;span&gt;&lt;span&gt; aur
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; config user.name &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;github-actions[bot]&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; config user.email &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;github-actions[bot]@users.noreply.github.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; add PKGBUILD .SRCINFO
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; commit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -m &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;release &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; push origin master
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;the-final-script&quot;&gt;The final script&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pacman -Syu --noconfirm
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pacman -S --noconfirm&lt;&#x2F;span&gt;&lt;span&gt; openssh git
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;useradd -m -G&lt;&#x2F;span&gt;&lt;span&gt; wheel runner
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;%wheel ALL=(ALL) NOPASSWD: ALL&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt;&amp;gt; &#x2F;etc&#x2F;sudoers
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chown -R&lt;&#x2F;span&gt;&lt;span&gt; runner:runner .
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;su&lt;&#x2F;span&gt;&lt;span&gt; runner&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -c &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    VERSION=${GITHUB_REF#refs&#x2F;tags&#x2F;v}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    mkdir -p ~&#x2F;.ssh
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    echo &amp;quot;${{ secrets.AUR_SSH_KEY }}&amp;quot; &amp;gt; ~&#x2F;.ssh&#x2F;aur
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    chmod 600 ~&#x2F;.ssh&#x2F;aur
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    echo &amp;quot;Host aur.archlinux.org&amp;quot; &amp;gt;&amp;gt; ~&#x2F;.ssh&#x2F;config
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    echo &amp;quot;  IdentityFile ~&#x2F;.ssh&#x2F;aur&amp;quot; &amp;gt;&amp;gt; ~&#x2F;.ssh&#x2F;config
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    echo &amp;quot;  User aur&amp;quot; &amp;gt;&amp;gt; ~&#x2F;.ssh&#x2F;config
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    ssh-keyscan -H aur.archlinux.org &amp;gt;&amp;gt; ~&#x2F;.ssh&#x2F;known_hosts
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    git clone ssh:&#x2F;&#x2F;aur@aur.archlinux.org&#x2F;&amp;lt;your-package&amp;gt;.git aur
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    .&#x2F;generate-pkgbuild $VERSION
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    makepkg --printsrcinfo &amp;gt; .SRCINFO
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    makepkg
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    makepkg --install
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    cp PKGBUILD .SRCINFO aur&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    cd aur
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    git config user.name &amp;quot;github-actions[bot]&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    git config user.email &amp;quot;github-actions[bot]@users.noreply.github.com&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    git add PKGBUILD .SRCINFO
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    git commit -m &amp;quot;release $VERSION&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    git push origin master
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;setting-up-the-github-action&quot;&gt;Setting up the GitHub Action&lt;&#x2F;h2&gt;
+&lt;p&gt;Create the action that will be triggered by our release tags:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;yaml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yaml &quot;&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Release
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;on&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tags&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      - &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;v*&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And add a job that will run all of our scripting inside an Arch Linux container:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;yaml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yaml &quot;&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;jobs&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;update-aur&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Update AUR repositories
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;runs-on&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ubuntu-latest
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;container&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;image&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;archlinux:latest
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;steps&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Checkout
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;actions&#x2F;checkout@v4
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Update AUR
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;run&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;|
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;          &amp;lt;the above script goes here&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And that&#x27;s it, now you can automatically publish your releases to AUR whenever
+you trigger a new GitHub release.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Migrating from Jekyll to Zola while preserving permalinks</title>
+        <published>2024-06-17T00:00:00+00:00</published>
+        <updated>2024-06-17T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/jekyll-to-zola/"/>
+        <id>https://eugene-babichenko.github.io/blog/jekyll-to-zola/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/jekyll-to-zola/">&lt;h2 id=&quot;intro&quot;&gt;Intro&lt;&#x2F;h2&gt;
+&lt;p&gt;I&#x27;ve been deploying this blog using &lt;a href=&quot;https:&#x2F;&#x2F;jekyllrb.com&#x2F;&quot;&gt;Jekyll&lt;&#x2F;a&gt; for quite a while now. This is the
+default choice for GitHub Pages, so why not. I&#x27;ve only been writing here
+occasionally from the same laptop, so it did not bother me too much. &lt;em&gt;Until it
+did&lt;&#x2F;em&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Jekyll is Ruby-based software. So you need to deal with Ruby. I tried wrapping
+it into &lt;code&gt;nix&lt;&#x2F;code&gt;, which I&#x27;ve been using at one of my jobs, but it was almost
+painfully slow. Also, I did not have any inspiration to write my custom themes
+and I did not find anything pretty for Jekyll. The default &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;jekyll&#x2F;minima&quot;&gt;minima&lt;&#x2F;a&gt; theme is
+honestly just hot garbage.&lt;&#x2F;p&gt;
+&lt;p&gt;I tried &lt;a href=&quot;https:&#x2F;&#x2F;gohugo.io&#x2F;&quot;&gt;Hugo&lt;&#x2F;a&gt;, but it just didn&#x27;t sit right with me. So, after doing some
+searching I settled with the combination of &lt;a href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;&quot;&gt;Zola&lt;&#x2F;a&gt; with the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Speyll&#x2F;anemone&quot;&gt;Anemone&lt;&#x2F;a&gt; theme. It
+is beatiful, it is fast, it does live reloads out of the box and Zola is just a
+single binary. No dependency hell, yay! And just a superior experience overall.&lt;&#x2F;p&gt;
+&lt;p&gt;But the transition is not very straightforward. When you have a bunch of links
+you posted across the Internet, you want to keep them alive regardless of what
+software you use to generate your site. With the default settings (that I have
+been using, of course), Jekyll generates permalinks that look like this:
+&lt;code&gt;&#x2F;blog&#x2F;&amp;lt;year&amp;gt;&#x2F;&amp;lt;month&amp;gt;&#x2F;&amp;lt;day&amp;gt;&#x2F;&amp;lt;page-name&amp;gt;&lt;&#x2F;code&gt;. Well, Zola doesn&#x27;t do that. And
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;getzola&#x2F;zola&#x2F;issues&#x2F;635#issuecomment-524564469&quot;&gt;doesn&#x27;t plan&lt;&#x2F;a&gt; to do that. Not a big issue for any &lt;em&gt;future&lt;&#x2F;em&gt; pages,
+I literally don&#x27;t care. But old permalinks and the feed need to be preserved
+somehow. Oh, and the time format is incompatible too, since Zola sticks to
+RFC3339.&lt;&#x2F;p&gt;
+&lt;p&gt;Ok, this is going to be an interesting evening and I need some beer. Let&#x27;s get
+started...&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-setup&quot;&gt;The setup&lt;&#x2F;h2&gt;
+&lt;p&gt;Assuming you have done the initial setup with Zola and Anemone, let&#x27;s create our
+blog page:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mkdir&lt;&#x2F;span&gt;&lt;span&gt; content&#x2F;blog
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cp&lt;&#x2F;span&gt;&lt;span&gt; themes&#x2F;anemone&#x2F;content&#x2F;blog&#x2F;_index.md content&#x2F;blog
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now we have an empty blog. Next, let&#x27;s copy the contents of our old Jekyll-based
+blog.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cp &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;path-to-jekyll-blog&amp;gt;&#x2F;_posts&#x2F;*.md content&#x2F;blog
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now we have an empty blog that doesn&#x27;t work. &lt;strong&gt;Awesome.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;timestamps&quot;&gt;Timestamps&lt;&#x2F;h2&gt;
+&lt;p&gt;That&#x27;s an easy one. Jekyll timestamps this form &lt;code&gt;2018-08-11 18:42:00 +0300&lt;&#x2F;code&gt;
+aren&#x27;t RFC-compatible. But something like this is: &lt;code&gt;2018-08-11 18:42:00+03:00&lt;&#x2F;code&gt;.
+This calls for a simple &lt;code&gt;sed&lt;&#x2F;code&gt; line:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sed -i -e &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s&#x2F; +0300&#x2F;+03:00&#x2F;g&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; content&#x2F;blog&#x2F;**&#x2F;*.md
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;If you have multiple timezones, just do that for these timezones as well. It can
+be done nicer, but for me it was only two timezones, so I can&#x27;t be bothered.&lt;&#x2F;p&gt;
+&lt;p&gt;Now we have the blog that works, but the permalinks are not the same and we need
+to fix that.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;permalinks&quot;&gt;Permalinks&lt;&#x2F;h2&gt;
+&lt;p&gt;We have no choice but to make up for the lack of this capability in Zola by
+leveraging the directory structure. E.g. do something like this:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;content
+&lt;&#x2F;span&gt;&lt;span&gt;├── blog
+&lt;&#x2F;span&gt;&lt;span&gt;│   ├── 2018
+&lt;&#x2F;span&gt;&lt;span&gt;│   │   ├── 08
+&lt;&#x2F;span&gt;&lt;span&gt;│   │   │   ├── 11
+&lt;&#x2F;span&gt;&lt;span&gt;│   │   │   │   ├── 2018-08-11-tiny-docker-images.md
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Yes, it&#x27;s bad, but it works and these are old posts, so I am not going to touch
+most of them anyway.&lt;&#x2F;p&gt;
+&lt;p&gt;I did the job with a simple Python script:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;os
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;pathlib
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;shutil
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# front matter for intermittent _index.md files
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FRONT_MATTER &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;---
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;render: false
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;transparent: true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;redirect_to: &amp;quot;&#x2F;blog&#x2F;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;---
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BASE &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;content&#x2F;blog&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;files = os.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;listdir&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BASE&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;file &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;files:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# don&amp;#39;t do anything for _index.md
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;file == &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_index.md&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;continue
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# construct directory paths
+&lt;&#x2F;span&gt;&lt;span&gt;    sections = file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;split&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)[:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;    pf = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BASE &lt;&#x2F;span&gt;&lt;span&gt;+ &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;(sections)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# create these dirs
+&lt;&#x2F;span&gt;&lt;span&gt;    pathlib.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Path&lt;&#x2F;span&gt;&lt;span&gt;(pf).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mkdir&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;parents&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;exist_ok&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# magical _index.md files
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;        p = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BASE &lt;&#x2F;span&gt;&lt;span&gt;+ &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;(sections[:i]) + &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;_index.md&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;with &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(p, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;w&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;f:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FRONT_MATTER&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;file&lt;&#x2F;span&gt;&lt;span&gt;=f)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# move our post to the correct place
+&lt;&#x2F;span&gt;&lt;span&gt;    shutil.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;move&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BASE &lt;&#x2F;span&gt;&lt;span&gt;+ file, pf + &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; + file)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This script creates the appropriate directory structure, places our article
+inside it and creates empty &lt;code&gt;_index.md&lt;&#x2F;code&gt; files in all subdirectories. They are
+not rendered, but are needed for Zola to see your directory structure correctly.
+Otherwise your posts are not going to be rendered. &lt;code&gt;transparent: true&lt;&#x2F;code&gt; makes it
+so that whatever theme you are using it sees the posts nested inside these
+directories.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;preserving-feed-xml&quot;&gt;Preserving &lt;code&gt;feed.xml&lt;&#x2F;code&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;If your Jekyll blog generated the RSS&#x2F;Atom feed, you want to have it with Zola
+as well. Good news: Zola can do that. Bad news: out of the box you are limited
+to either &lt;code&gt;atom.xml&lt;&#x2F;code&gt; or &lt;code&gt;rss.xml&lt;&#x2F;code&gt;. That one is easy to solve, though. Just copy
+Zola&#x27;s template to your &lt;code&gt;templates&lt;&#x2F;code&gt; directory and rename it:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wget&lt;&#x2F;span&gt;&lt;span&gt; https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;getzola&#x2F;zola&#x2F;b965c89d12689d658a70f67f78d9de76b1a1cf48&#x2F;components&#x2F;templates&#x2F;src&#x2F;builtins&#x2F;atom.xml
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mv&lt;&#x2F;span&gt;&lt;span&gt; atom.xml feed.xml
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Then add this to your &lt;code&gt;config.toml&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;generate_feed &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;feed_filename &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;feed.xml&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Woohoo, you are set! Almost...&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;fixing-links-in-anemone&quot;&gt;Fixing links in Anemone&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;UPD 2025-04-16&lt;&#x2F;strong&gt;: this is not needed in the latest Anemone versions.&lt;&#x2F;p&gt;
+&lt;p&gt;If you are using Anemone, this section is for you. If you don&#x27;t, do check that
+all links in your templates are correct. I warned you.&lt;&#x2F;p&gt;
+&lt;p&gt;Anyway, here are the patches to fix links in Anemone:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;&#x2F;patches&#x2F;anemone-head.patch&quot;&gt;themes&#x2F;anemone&#x2F;templates&#x2F;head.html&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;&#x2F;patches&#x2F;anemone-blog-page.patch&quot;&gt;themes&#x2F;anemone&#x2F;templates&#x2F;blog-page.html&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;&#x2F;patches&#x2F;anemone-footer.patch&quot;&gt;themes&#x2F;anemone&#x2F;templates&#x2F;footer.html&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Just apply these patches and you are &lt;em&gt;finally&lt;&#x2F;em&gt; done.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;&#x2F;h2&gt;
+&lt;p&gt;While the proper transition was definitely not straightforward, I definitely
+enjoy my new setup. It looks nice and it&#x27;s a pleasure to work with. Zola is a
+great software and it has a vibrant community with some pretty nice design, like
+the one you are looking at right now.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>My toolbox</title>
+        <published>2024-06-16T00:00:00+00:00</published>
+        <updated>2024-06-16T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/toolbox/"/>
+        <id>https://eugene-babichenko.github.io/toolbox/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/toolbox/">&lt;p&gt;This page will serve to collect small (or not so small) things I like to use and
+think it would be good to share with you. Console utilities, hardware, whatever.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;console-utilitites&quot;&gt;Console utilitites&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nvbn&#x2F;thefuck&quot;&gt;thefuck&lt;&#x2F;a&gt;. A utility that corrects mistyped
+console commands and do something more: propose you to install what is not
+installed. It also allows you to create your own correction rules.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;http:&#x2F;&#x2F;igorgue.com&#x2F;pjson&#x2F;&quot;&gt;pjson&lt;&#x2F;a&gt;. Reads JSON&#x2F;XML inputs and gives you
+pretty-printed outputs. Especially good when combined with &lt;code&gt;curl&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;pandoc.org&#x2F;index.html&quot;&gt;pandoc&lt;&#x2F;a&gt;. A great tool to convert documents
+from any format to any other format.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;websockets&#x2F;wscat&quot;&gt;wscat&lt;&#x2F;a&gt;. A very simple utility to debug
+WebSockets.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;utilities-with-gui&quot;&gt;Utilities with GUI&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;itunes.apple.com&#x2F;us&#x2F;app&#x2F;copyclip-clipboard-history&#x2F;id595191960&quot;&gt;CopyClip&lt;&#x2F;a&gt;.
+A macOS-specific tool that gives you access to the clipboard history.
+Accessible from the system tray. Has hotkeys. Downside: text-only.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;portainer.io&quot;&gt;Portainer&lt;&#x2F;a&gt;. Just the best UI for Docker so far. Helps
+you manage containers, images, volumes and networks. Works pretty fast even
+though the UI is web-based.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.syntevo.com&#x2F;smartgit&#x2F;&quot;&gt;SmartGit&lt;&#x2F;a&gt;. The Git GUI client that works
+best for me (especially when resolving merge conflicts). It may look dated but
+definitely deserves some attention.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Kong&#x2F;insomnia&quot;&gt;Insomnia&lt;&#x2F;a&gt;. A decent feature-rich UI for
+HTTP requests. Much more lightweight than Postman.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;online-services&quot;&gt;Online services&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.citethisforme.com&#x2F;&quot;&gt;CiteThisForMe&lt;&#x2F;a&gt;. A resource for creating
+bibliographies in a format required by a particular journal or a conference.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;zsh&quot;&gt;zsh&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.zsh.org&quot;&gt;zsh&lt;&#x2F;a&gt; itself. The most convenient shell for me so far.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zsh-users&#x2F;antigen&quot;&gt;antigen&lt;&#x2F;a&gt;. The best way to configure zsh
+so far. Supports oh-my-zsh&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;sindresorhus&#x2F;pure&quot;&gt;pure&lt;&#x2F;a&gt;. Nice and convenient zsh prompt
+with git integration.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zsh-users&#x2F;zsh-autosuggestions&quot;&gt;zsh-autosuggestions&lt;&#x2F;a&gt;.
+Suggests the command as you type. The suggestion is accepted by pressing the
+right arrow button.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zsh-users&#x2F;zsh-completions&quot;&gt;zsh-completions&lt;&#x2F;a&gt;. An extension
+for autocompletion in zsh.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zdharma&#x2F;fast-syntax-highlighting&quot;&gt;fast-syntax-highlighting&lt;&#x2F;a&gt;.
+Good syntax highlighting system for zsh.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;other&quot;&gt;Other&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;tonsky&#x2F;FiraCode&quot;&gt;Fira Code&lt;&#x2F;a&gt; – the best monospace font with
+ligatures.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Highly configurable software and Lua greatness</title>
+        <published>2024-06-10T14:00:00+03:00</published>
+        <updated>2024-06-10T14:00:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2024/06/10/lua-config/"/>
+        <id>https://eugene-babichenko.github.io/blog/2024/06/10/lua-config/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2024/06/10/lua-config/">&lt;p&gt;Recently, I have started using two things: &lt;a href=&quot;https:&#x2F;&#x2F;neovim.io&#x2F;&quot;&gt;Neovim&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;wezfurlong.org&#x2F;wezterm&#x2F;index.html&quot;&gt;WezTerm&lt;&#x2F;a&gt;.
+Both pieces of software are designed with great flexibility in mind. And both
+are configured with &lt;a href=&quot;https:&#x2F;&#x2F;lua.org&#x2F;&quot;&gt;Lua&lt;&#x2F;a&gt;. After rocking them for a while, I decided to
+share my thoughts.&lt;&#x2F;p&gt;
+&lt;p&gt;This story started with me trying to give the entire Vim thing another shot.
+Then I remembered that there is Neovim. The interesting thing for me was the
+first-class LSP support. But then I also remembered it can be configured (or
+programmed, really) in Lua instead of VimScript, which I think is an utterly
+horrible programming language which was put in there for the lack of a better
+alternative at the time.&lt;&#x2F;p&gt;
+&lt;p&gt;Before that I have used Lua in some obscure robotics platform and it was fine,
+so I though &quot;why not?&quot;. After all, it seemed like a rather small and limited,
+but still a &quot;proper&quot; programming language. A tiny JS-like thing, if you will. So
+I decided to go with configuring my Neovim installation in Lua instead of
+VimScript.&lt;&#x2F;p&gt;
+&lt;p&gt;Can you imagine my surprise finding an entire Lua-based ecosystem? Everything
+felt like such a breeze after struggling with VimScript and Emacs Lisp. And
+quite contrary to my fears about putting an entire proper scripting language
+into any software, the thing is &lt;em&gt;properly quick&lt;&#x2F;em&gt;. My Neovim installation
+contains 30+ plugins including dependencies and this thing easily loads in
+sub-100 (60-70 ms to be precise) milliseconds time. In a blink of an eye really.&lt;&#x2F;p&gt;
+&lt;p&gt;And then came WezTerm. At the time, I&#x27;ve been looking for an alternative to
+kitty. The thing worked, it was relatively quick, but it just felt &lt;em&gt;clunky&lt;&#x2F;em&gt; and
+the way it was configured have been driving me nuts for a while. Like, I have a
+Python interpreter shipped with this thing, and yet I have to write every
+&lt;code&gt;CMD+number&lt;&#x2F;code&gt; key binding in a custom config language to get iTerm-like tab
+switching by hand? Really? But what are the alternatives? Alacritty and the
+likes of it seems too minimalistic and I am not a fan of tmux. And I would have
+had to use it because Alacritty lacks any multiplexing capabilities. I moved
+away from iTerm because of poor rendering perforamce: it is not slow, but it
+does eat through battery, and this is something important for me. And then I
+stumbled upon WezTerm on &lt;a href=&quot;https:&#x2F;&#x2F;www.reddit.com&#x2F;r&#x2F;neovim&#x2F;&quot;&gt;r&#x2F;neovim&lt;&#x2F;a&gt;. WezTerm allows to neatly fit that in
+a three-line for-loop because, you guessed it, it&#x27;s config is a Lua script.&lt;&#x2F;p&gt;
+&lt;p&gt;If you are building software designed to be used by other engineers and want to
+bring in a great degree of configurability, Lua is a great choice. It may not be
+the most powerful or expressive programming language, but the goal is to write
+scripts, so it doesn&#x27;t have to be. It promises to be a quick embeddable
+scripting language and it delivers on this promise. It is simple enough to be
+learnt in an evening for the purposes of just writing a config. Unlike languages
+like VimScript or Emacs Lisp it is not unique to specific software. And unlike
+Python, Ruby or JavaScript it is quick and tiny: the entire interpreter is 32k
+LOC. It comes with proper development tooling: a formatter and a language
+server. I hope to use it in my projects someday, but for now I am just enjoying
+the great software.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>WezTerm: an actually good config key binding recipe</title>
+        <published>2024-06-03T19:40:00+03:00</published>
+        <updated>2024-06-03T19:40:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2024/06/03/wezterm-open-config/"/>
+        <id>https://eugene-babichenko.github.io/blog/2024/06/03/wezterm-open-config/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2024/06/03/wezterm-open-config/">&lt;p&gt;While &lt;a href=&quot;https:&#x2F;&#x2F;wezfurlong.org&#x2F;wezterm&#x2F;&quot;&gt;WezTerm&lt;&#x2F;a&gt; is a great terminal with sane defaults, it doesn&#x27;t provide
+the default key binding to open the configuration file and edit it. That is
+understandable, everyone may have their own preference for that. Here we will
+figure out the recipe that would work everywhere and abide by modern standards.&lt;&#x2F;p&gt;
+&lt;p&gt;In my opinion, the proper way to go is to open the configuration file with the
+editor specified in the &lt;code&gt;EDITOR&lt;&#x2F;code&gt; environment variable. I am also using macOS
+most of the time, so the most natural key binding to configure something is
+&lt;code&gt;Cmd+,&lt;&#x2F;code&gt;. In many applications this key binding is universal for all operating
+systems.&lt;&#x2F;p&gt;
+&lt;p&gt;It is easy to find out where the WezTerm configuration file is located: there is
+always the &lt;code&gt;WEZTERM_CONFIG_FILE&lt;&#x2F;code&gt; variable. Also there is always the
+&lt;code&gt;WEZTERM_CONFIG_DIR&lt;&#x2F;code&gt; variable that should allow us to specify the working
+directory for our editor.&lt;&#x2F;p&gt;
+&lt;p&gt;The problem with the &lt;code&gt;EDITOR&lt;&#x2F;code&gt; variable is that it may not be immediately
+accessible to WezTerm config via &lt;code&gt;os.getenv(&quot;EDITOR&quot;)&lt;&#x2F;code&gt; if it was specified in
+your shell configuration (e.g. &lt;code&gt;.bashrc&lt;&#x2F;code&gt;) and not it some other magical place.
+To solve this we will obviously need to load our editor inside the shell, which
+is conveniently accessible via the &lt;code&gt;SHELL&lt;&#x2F;code&gt; variable.&lt;&#x2F;p&gt;
+&lt;p&gt;Considering all of the above, we end up with the code like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;lua&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-lua &quot;&gt;&lt;code class=&quot;language-lua&quot; data-lang=&quot;lua&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;local &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wezterm &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;wezterm&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;local &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;config &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wezterm&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;config_builder&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;config&lt;&#x2F;span&gt;&lt;span&gt;.keys = {
+&lt;&#x2F;span&gt;&lt;span&gt;  {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;key &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mods &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SUPER&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;action &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;act&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SpawnCommandInNewWindow&lt;&#x2F;span&gt;&lt;span&gt;({
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cwd &lt;&#x2F;span&gt;&lt;span&gt;= os.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;getenv&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;WEZTERM_CONFIG_DIR&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;),
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;args &lt;&#x2F;span&gt;&lt;span&gt;= { os.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;getenv&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SHELL&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;), &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-c&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$EDITOR $WEZTERM_CONFIG_FILE&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; },
+&lt;&#x2F;span&gt;&lt;span&gt;    }),
+&lt;&#x2F;span&gt;&lt;span&gt;  },
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This greatness of this specific recipe is that it will work regardless of your
+preferred shell end editor as long as the &lt;code&gt;EDITOR&lt;&#x2F;code&gt; variable is set. The &lt;code&gt;-c&lt;&#x2F;code&gt;
+flag is accepted by all major *nix shells. Also, regardless of the fact your
+editor is running with an shell, the window will close immediately after you
+close the editor. And of course, you can swap &lt;code&gt;SpawnCommandInNewWindow&lt;&#x2F;code&gt; with
+&lt;code&gt;SpawnCommandInNewTab&lt;&#x2F;code&gt; or any custom &lt;code&gt;SpawnCommand&lt;&#x2F;code&gt; call.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Configuring Git to automatically select personal or job configurations</title>
+        <published>2020-09-30T21:20:00+03:00</published>
+        <updated>2020-09-30T21:20:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2020/09/30/git-separate-personal-work-configs/"/>
+        <id>https://eugene-babichenko.github.io/blog/2020/09/30/git-separate-personal-work-configs/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2020/09/30/git-separate-personal-work-configs/">&lt;p&gt;Making per-repository git configurations for personal and job repositories is a
+bit annoying so here is a simple approach for automatically applying different
+Git configurations to different repositories.&lt;&#x2F;p&gt;
+&lt;p&gt;First, you need to keep your personal and job repositories under different
+directories. In my case I do the following:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;~&#x2F;Projects
+&lt;&#x2F;span&gt;&lt;span&gt;├── job
+&lt;&#x2F;span&gt;&lt;span&gt;└── personal
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;After that, you need to separate your configurations which is easy thanks to
+Git &lt;code&gt;includeIf&lt;&#x2F;code&gt; feature. In the first-level config (&lt;code&gt;~&#x2F;.config&#x2F;git&#x2F;config&lt;&#x2F;code&gt; or
+&lt;code&gt;~&#x2F;.gitconfig&lt;&#x2F;code&gt;) I store settings that should be applied regardless of whether it
+is a personal or a job project (e.g. settings like &lt;code&gt;core.editor&lt;&#x2F;code&gt;, etc) &lt;strong&gt;and&lt;&#x2F;strong&gt;
+the default configuration with my personal email and PGP key.&lt;&#x2F;p&gt;
+&lt;p&gt;Then I create separate configuration files for non-default configurations (I put
+everything under &lt;code&gt;~&#x2F;.config&#x2F;git&lt;&#x2F;code&gt; or &lt;code&gt;$XDG_CONFIG_HOME&#x2F;git&lt;&#x2F;code&gt;):&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;job.gitconfig&lt;&#x2F;code&gt; - this is the config to be used for my main job.&lt;&#x2F;p&gt;
+&lt;p&gt;[user]
+name = John Doe
+email = john.doe@company.com
+signingkey = AAAAAAAA&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Then I include this file in the main config file (&lt;code&gt;~&#x2F;.config&#x2F;git&#x2F;config&lt;&#x2F;code&gt;):&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;[user]
+&lt;&#x2F;span&gt;&lt;span&gt;	name = John Doe
+&lt;&#x2F;span&gt;&lt;span&gt;	email = john.doe@example.com
+&lt;&#x2F;span&gt;&lt;span&gt;	signingkey = DEADBEEF
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;[includeIf &amp;quot;gitdir:~&#x2F;Projects&#x2F;job&#x2F;&amp;quot;]
+&lt;&#x2F;span&gt;&lt;span&gt;	path = &amp;quot;job.gitconfig&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This way appropriate configurations will be applied for projects under
+&lt;code&gt;personal&lt;&#x2F;code&gt; (and everything else other than &lt;code&gt;job&lt;&#x2F;code&gt;) or &lt;code&gt;job&lt;&#x2F;code&gt; subdirectories.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;[UPD 2022-02-12]:&lt;&#x2F;strong&gt; Now I use separate files only for job directories related
+configurations and use the default configuration for everything else putting it
+into the top-level file.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Automated multi-platform releases with GitHub Actions</title>
+        <published>2020-05-09T15:20:00+03:00</published>
+        <updated>2020-05-09T15:20:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2020/05/09/github-actions-cross-platform-auto-releases/"/>
+        <id>https://eugene-babichenko.github.io/blog/2020/05/09/github-actions-cross-platform-auto-releases/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2020/05/09/github-actions-cross-platform-auto-releases/">&lt;p&gt;GitHub Actions allows you to create releases, build binaries, and upload them.
+Unfortunately, there is no official tutorial on how to create a release, build
+the code for multiple platforms, and upload binaries to the release. I will
+cover how to do that without any 3rd-party actions in this post. I assume that
+you are familiar with the basics of GitHub Actions.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;selecting-the-workflow-trigger&quot;&gt;Selecting the workflow trigger&lt;&#x2F;h2&gt;
+&lt;p&gt;First things first: let&#x27;s select the trigger for our workflow. I &lt;code&gt;git&lt;&#x2F;code&gt; tags for
+versioning, and for simplicity they begin with &lt;code&gt;v&lt;&#x2F;code&gt;, so the simplest trigger we
+can use&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;yaml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yaml &quot;&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;on&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tags&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      - &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;v[0-9]+.*&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Let&#x27;s continue to defining our jobs.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;creating-the-release&quot;&gt;Creating the release&lt;&#x2F;h2&gt;
+&lt;p&gt;Since we are going to do multiple builds defined in a matrix, creating the new
+release should be obviously done in a separate job. GitHub has the official
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;actions&#x2F;create-release#example-workflow---create-a-release&quot;&gt;example&lt;&#x2F;a&gt; for that. The only difference from the example is that we
+add the job output. This output will be used by build jobs to upload their
+results to the created release.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;yaml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yaml &quot;&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;{% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;raw %&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;jobs&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;create_release&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Create release
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;runs-on&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ubuntu-latest
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Note this. We are going to use that in further jobs.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;outputs&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;upload_url&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${{ steps.create_release.outputs.upload_url }}
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;steps&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Create release
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;create_release
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;actions&#x2F;create-release@v1
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GITHUB_TOKEN&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${{ secrets.GITHUB_TOKEN }}
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;with&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tag_name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${{ github.ref }}
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;release_name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Release ${{ github.ref }}
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;draft&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prerelease&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;span&gt;{% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;endraw %&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;build-and-upload&quot;&gt;Build and upload&lt;&#x2F;h2&gt;
+&lt;p&gt;This is the final step. I won&#x27;t dive into the details too much because you will
+have your own build scenarios. But here are a couple of things to highlight:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The build jobs will have &lt;code&gt;create_release&lt;&#x2F;code&gt; as a dependency.&lt;&#x2F;li&gt;
+&lt;li&gt;The output of &lt;code&gt;create_release&lt;&#x2F;code&gt; is used in the last &quot;upload step&quot;.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;You can get more details on assets uploads &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;actions&#x2F;upload-release-asset&quot;&gt;here&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;yaml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yaml &quot;&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;{% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;raw %&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# ...
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;release_assets&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Release assets
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;needs&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;create_release &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# we need to know the upload URL
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;runs-on&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${{ matrix.config.os }} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# we run many different builds
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;strategy&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# just an example matrix
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;matrix&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;config&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;          - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;os&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ubuntu-latest
+&lt;&#x2F;span&gt;&lt;span&gt;          - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;os&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;macos-latest
+&lt;&#x2F;span&gt;&lt;span&gt;          - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;os&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;windows-latest
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;steps&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# checkout of cource
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Checkout code
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;actions&#x2F;checkout@v1
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# ... whatever build and packaging steps you need here
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# and finally do an upload!
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Upload release assets
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;actions&#x2F;upload-release-asset@v1
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GITHUB_TOKEN&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${{ secrets.GITHUB_TOKEN }}
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;with&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;upload_url&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${{ needs.create_release.outputs.upload_url }}
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# This is how it will be named on the release page. Put hatever name
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# you like, remember that they need to be different for each platform.
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# You can choose any build matrix parameters. For Rust I use the
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# target triple.
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;asset_name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;program-name-${{ matrix.config.os }}
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# The path to the file you want to upload.
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;asset_path&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&#x2F;path&#x2F;to&#x2F;your&#x2F;file
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# probably you will need to change it, but most likely you are
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# uploading a binary file
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;asset_content_type&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;application&#x2F;octet-stream
+&lt;&#x2F;span&gt;&lt;span&gt;{% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;endraw %&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;A note on executable formats: if you are building for Windows and uploading an
+&lt;code&gt;.exe&lt;&#x2F;code&gt; you can use two different steps for uploading the executable. One should
+have &lt;code&gt;if: matrix.config.os == &#x27;windows-latest&#x27;&lt;&#x2F;code&gt; and asset path
+&lt;code&gt;asset_path: .&#x2F;path&#x2F;to&#x2F;your&#x2F;file.exe&lt;&#x2F;code&gt;. For *nix operating systems that usually
+are not using extensions for executables, use
+&lt;code&gt;if: matrix.config.os != &#x27;windows-latest&#x27;&lt;&#x2F;code&gt;. This is a very useful trick overall
+when creating jobs that should handle multiple platforms.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>How to force Rust compiler to use several x86 instructions (popcount, etc)</title>
+        <published>2019-11-13T21:00:00+02:00</published>
+        <updated>2019-11-13T21:00:00+02:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2019/11/13/rust-popcount-intrinsics/"/>
+        <id>https://eugene-babichenko.github.io/blog/2019/11/13/rust-popcount-intrinsics/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2019/11/13/rust-popcount-intrinsics/">&lt;p&gt;Sometimes you need tricky operations on your binary data like counting bits,
+leading or trailing zeros and so on (for example, when you want to implement
+&lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Hash_array_mapped_trie&quot;&gt;HAMT&lt;&#x2F;a&gt; or sparse arrays). In Rust this is achieved by using methods like
+&lt;code&gt;.count_ones()&lt;&#x2F;code&gt; and &lt;code&gt;.trailing_zeros()&lt;&#x2F;code&gt;. The problem with those methods is that
+they are usually expanded in a huge pile of assembler code. But x86 (and some
+other architectures) have instructions to perform these counts (specifically,
+&lt;code&gt;popcnt&lt;&#x2F;code&gt; and &lt;code&gt;tzcnt&lt;&#x2F;code&gt;) and they are really fast (&lt;a href=&quot;https:&#x2F;&#x2F;software.intel.com&#x2F;en-us&#x2F;forums&#x2F;intel-isa-extensions&#x2F;topic&#x2F;289168&quot;&gt;1 cycle for execution and
+latency of 3 cycles&lt;&#x2F;a&gt;). Today we will learn how to force Rust
+compiler to use those instructions and what are the possible pitfalls.&lt;&#x2F;p&gt;
+&lt;p&gt;Let&#x27;s start with an example. Here&#x27;s the code that finds population counts of
+random integers (&lt;a href=&quot;https:&#x2F;&#x2F;play.rust-lang.org&#x2F;?version=stable&amp;amp;mode=release&amp;amp;edition=2018&amp;amp;gist=2551cbb6a41adad36e45bc50bf26c3bb&quot;&gt;on Rust Playground&lt;&#x2F;a&gt;):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;rand::prelude::*;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; this is only to have this function separately in the asm output
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;inline&lt;&#x2F;span&gt;&lt;span&gt;(never)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    a.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;count_ones&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; a: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32 &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;random&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;(a));
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;(a + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;));
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And the &lt;code&gt;count&lt;&#x2F;code&gt; function looks like that:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;playground::count:
+&lt;&#x2F;span&gt;&lt;span&gt;	mov	eax, edi
+&lt;&#x2F;span&gt;&lt;span&gt;	shr	eax
+&lt;&#x2F;span&gt;&lt;span&gt;	and	eax, 1431655765
+&lt;&#x2F;span&gt;&lt;span&gt;	sub	edi, eax
+&lt;&#x2F;span&gt;&lt;span&gt;	mov	eax, edi
+&lt;&#x2F;span&gt;&lt;span&gt;	and	eax, 858993459
+&lt;&#x2F;span&gt;&lt;span&gt;	shr	edi, 2
+&lt;&#x2F;span&gt;&lt;span&gt;	and	edi, 858993459
+&lt;&#x2F;span&gt;&lt;span&gt;	add	edi, eax
+&lt;&#x2F;span&gt;&lt;span&gt;	mov	eax, edi
+&lt;&#x2F;span&gt;&lt;span&gt;	shr	eax, 4
+&lt;&#x2F;span&gt;&lt;span&gt;	add	eax, edi
+&lt;&#x2F;span&gt;&lt;span&gt;	and	eax, 252645135
+&lt;&#x2F;span&gt;&lt;span&gt;	imul	eax, eax, 16843009
+&lt;&#x2F;span&gt;&lt;span&gt;	shr	eax, 24
+&lt;&#x2F;span&gt;&lt;span&gt;	ret
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Wow. A huge pile of instructions and magic numbers. This is clearly not
+something we would like to see, especially in performance-critical places. Let&#x27;s
+make this a little bit better (&lt;a href=&quot;https:&#x2F;&#x2F;play.rust-lang.org&#x2F;?version=stable&amp;amp;mode=release&amp;amp;edition=2018&amp;amp;gist=a91e315224c79f2d6c72bb85d3fdfe2d&quot;&gt;on Rust Playground&lt;&#x2F;a&gt;):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;rand::prelude::*;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; this is only to have this function separately in the asm output
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;inline&lt;&#x2F;span&gt;&lt;span&gt;(never)]
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cfg_attr&lt;&#x2F;span&gt;&lt;span&gt;(target_arch = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;x86_64&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;target_feature&lt;&#x2F;span&gt;&lt;span&gt;(enable = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;popcnt&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;))]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;unsafe fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    a.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;count_ones&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; a: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32 &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;random&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;unsafe &lt;&#x2F;span&gt;&lt;span&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;(a) });
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;unsafe &lt;&#x2F;span&gt;&lt;span&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;(a + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;) });
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And here is the assembly code of &lt;code&gt;count&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;playground::count:
+&lt;&#x2F;span&gt;&lt;span&gt;	popcnt	eax, edi
+&lt;&#x2F;span&gt;&lt;span&gt;	ret
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Only a single &lt;a href=&quot;https:&#x2F;&#x2F;software.intel.com&#x2F;en-us&#x2F;forums&#x2F;intel-isa-extensions&#x2F;topic&#x2F;289168&quot;&gt;very fast&lt;&#x2F;a&gt; instruction! And that this will work
+with all integer types. There is a pitfall though: Rust requires us to mark
+functions as &lt;code&gt;unsafe&lt;&#x2F;code&gt; when we use &lt;code&gt;target_feature&lt;&#x2F;code&gt; so it makes sense to make
+functions using those features as small as possible.&lt;&#x2F;p&gt;
+&lt;p&gt;Also, you can do something similar with &lt;code&gt;.trailing_zeros()&lt;&#x2F;code&gt; or
+&lt;code&gt;.leading_zeros()&lt;&#x2F;code&gt; by using &lt;code&gt;target_feature(enable = &quot;bmi1&quot;)&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;To find feature names you can refer to architecture-specific &lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;std&#x2F;intrinsics&#x2F;index.html&quot;&gt;intrinsics
+documentation&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;That&#x27;s all, hope you find it useful!&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Generating pretty version strings (including nightly) with Git and Makefiles</title>
+        <published>2019-09-28T16:45:00+03:00</published>
+        <updated>2019-09-28T16:45:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2019/09/28/nightly-versions-makefiles/"/>
+        <id>https://eugene-babichenko.github.io/blog/2019/09/28/nightly-versions-makefiles/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2019/09/28/nightly-versions-makefiles/">&lt;p&gt;In my recent project, I faced the need to generate pretty version numbers for my
+local and nightly builds. Here I will describe the approach I came up with. In
+this tutorial, we will use Git, which stores version tags and the entire setup
+uses Makefiles. However, you should be able to adapt this approach to any build
+system.&lt;&#x2F;p&gt;
+&lt;p&gt;In the end, we will be able to get pretty and very informative version strings
+like &lt;code&gt;0.2.1-next-314da12-20190928&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;You can check out the code from this article in &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;eugene-babichenko&#x2F;f37d15626160914427563dff2edd57ed&quot;&gt;this Gist&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;First of all, we need to have versions based on git tags. Here, I will assume
+that version tags are in the format &lt;code&gt;v0.1.2&lt;&#x2F;code&gt;. Given that, we can extract the
+latest tag and strip the &lt;code&gt;v&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;makefile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-makefile &quot;&gt;&lt;code class=&quot;language-makefile&quot; data-lang=&quot;makefile&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG_COMMIT &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; rev-list&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --abbrev-commit --tags --max-count&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# `2&amp;gt;&#x2F;dev&#x2F;null` suppress errors and `|| true` suppress the error codes.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; describe&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --abbrev&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --tags &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG_COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;dev&#x2F;null &lt;&#x2F;span&gt;&lt;span&gt;|| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# here we strip the version prefix
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG:v%=%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This script will not fail if there are no tags in the current repository, but
+this will generate an empty version string. In this case, we can build a version
+string from the latest git commit hash and add the commit date for additional
+info:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;makefile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-makefile &quot;&gt;&lt;code class=&quot;language-makefile&quot; data-lang=&quot;makefile&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# get the latest commit hash in the short form
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;COMMIT &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; rev-parse&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --short&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; HEAD&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# get the latest commit date in the form of YYYYmmdd
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DATE &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; log&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -1 --format&lt;&#x2F;span&gt;&lt;span&gt;=%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cd --date&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;format:&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;%Y%m%d&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# check if the version string is empty
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ifeq&lt;&#x2F;span&gt;&lt;span&gt; $(VERSION,)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;	VERSION &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DATA&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;endif
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This will give us a version string in a format like &lt;code&gt;314da12-20190928&lt;&#x2F;code&gt; which
+gives us pretty much information about the build. Particularly, when the change
+was made and which commit we should look for.&lt;&#x2F;p&gt;
+&lt;p&gt;On top of that, we can deal with nightly builds that appeared after a particular
+version like that: &lt;code&gt;0.2.1-next-314da12-20190928&lt;&#x2F;code&gt;. This line contains even more
+information as it includes the last stable version. We can quickly grab the
+version number and compare our changes to it to see what went wrong. This is how
+we generate this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;makefile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-makefile &quot;&gt;&lt;code class=&quot;language-makefile&quot; data-lang=&quot;makefile&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ifneq &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG_COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;	VERSION &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-next-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DATE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;endif
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Finally, we can indicate that we were building from a dirty git state (e.g. we
+had uncommitted changes during the build):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;makefile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-makefile &quot;&gt;&lt;code class=&quot;language-makefile&quot; data-lang=&quot;makefile&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# git status --porcelain outputs a machine-readable text and the output is empty
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# if the working tree is clean
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ifneq &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; status&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --porcelain&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;,)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;	VERSION &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-dirty
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;endif
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This is how the script looks in the end:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;makefile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-makefile &quot;&gt;&lt;code class=&quot;language-makefile&quot; data-lang=&quot;makefile&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG_COMMIT &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; rev-list&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --abbrev-commit --tags --max-count&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; describe&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --abbrev&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --tags &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG_COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;dev&#x2F;null &lt;&#x2F;span&gt;&lt;span&gt;|| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;COMMIT &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; rev-parse&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --short&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; HEAD&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DATE &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; log&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -1 --format&lt;&#x2F;span&gt;&lt;span&gt;=%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cd --date&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;format:&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;%Y%m%d&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG:v%=%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ifneq &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TAG_COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;	VERSION &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-next-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DATE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;endif
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ifeq&lt;&#x2F;span&gt;&lt;span&gt; $(VERSION,)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;	VERSION &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;COMMIT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DATA&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;endif
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ifneq &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;shell &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; status&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --porcelain&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;,)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;	VERSION &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-dirty
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;endif
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;That&#x27;s all! For me, this looks very good, because it does not use any additional
+tools apart from Git and &lt;code&gt;make&lt;&#x2F;code&gt;. Hope you will find this useful!&lt;&#x2F;p&gt;
+&lt;p&gt;As a bonus, I would like to show how I integrate that with Go builds.&lt;&#x2F;p&gt;
+&lt;p&gt;First, you need to specify the &lt;code&gt;version&lt;&#x2F;code&gt; variable in your &lt;code&gt;main&lt;&#x2F;code&gt; package (I do
+it exactly this way because this is compatible with GoReleaser):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;go&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-go &quot;&gt;&lt;code class=&quot;language-go&quot; data-lang=&quot;go&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;package &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;main
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;dev&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;func &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And this is my &lt;code&gt;Makefile&lt;&#x2F;code&gt; for filling in that variable&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;makefile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-makefile &quot;&gt;&lt;code class=&quot;language-makefile&quot; data-lang=&quot;makefile&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FLAGS &lt;&#x2F;span&gt;&lt;span&gt;:= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-ldflags &amp;quot;-X main.version=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;build&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;go&lt;&#x2F;span&gt;&lt;span&gt; build &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FLAGS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -o&lt;&#x2F;span&gt;&lt;span&gt; projectname-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt; main.go
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;run&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;go&lt;&#x2F;span&gt;&lt;span&gt; run &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FLAGS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt; main.go
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;install&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;go&lt;&#x2F;span&gt;&lt;span&gt; install &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FLAGS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Just another terminal setup</title>
+        <published>2019-06-13T11:00:00+03:00</published>
+        <updated>2019-06-13T11:00:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2019/06/13/terminal-setup/"/>
+        <id>https://eugene-babichenko.github.io/blog/2019/06/13/terminal-setup/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2019/06/13/terminal-setup/">&lt;p&gt;In this post, I will guide you through my terminal setup (which is quite simple
+though). This post may be updated in the future and is also for my own
+convenience when I need to set up everything on another machine.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;assets&#x2F;2019-06-13-terminal-screenshot.png&quot; alt=&quot;This is how it looks&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;terminal-emulator&quot;&gt;Terminal emulator&lt;&#x2F;h2&gt;
+&lt;p&gt;I have been using &lt;a href=&quot;https:&#x2F;&#x2F;www.iterm2.com&quot;&gt;iTerm2&lt;&#x2F;a&gt; on a Mac for quite a long time until I found
+myself not using most of its features, so now I am fine with the default
+&lt;code&gt;Terminal.app&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;themes&quot;&gt;Themes&lt;&#x2F;h2&gt;
+&lt;p&gt;I am a big fan of &lt;a href=&quot;https:&#x2F;&#x2F;ethanschoonover.com&#x2F;solarized&#x2F;&quot;&gt;Solarized&lt;&#x2F;a&gt; themes and use Solarized Light light
+most of the day and Solarized Dark if I work in the evening or overnight or in
+bad lighting conditions.&lt;&#x2F;p&gt;
+&lt;p&gt;Here is the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;tomislav&#x2F;osx-terminal.app-colors-solarized&quot;&gt;GitHub repository&lt;&#x2F;a&gt; with those themes implement for
+&lt;code&gt;Terminal.app&lt;&#x2F;code&gt; by &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;tomislav&quot;&gt;@tomsilav&lt;&#x2F;a&gt;, iTerm2 has them out-of-the-box.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;shell&quot;&gt;Shell&lt;&#x2F;h2&gt;
+&lt;p&gt;I use &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;wiki&#x2F;Installing-ZSH&quot;&gt;zsh&lt;&#x2F;a&gt; because I like its features (like autocompletion, shared
+command history, and many others) and extensibility. I also tried &lt;a href=&quot;http:&#x2F;&#x2F;fishshell.com&quot;&gt;fish&lt;&#x2F;a&gt;
+but it lacked some features I needed that time. Maybe, I will give a try once
+again.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;plugins&quot;&gt;Plugins&lt;&#x2F;h2&gt;
+&lt;p&gt;First off, we need to somehow manage our plugins and &lt;code&gt;zsh&lt;&#x2F;code&gt; don&#x27;t have such
+capabilities out-of-the-box. I use &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zsh-users&#x2F;antigen&quot;&gt;antigen&lt;&#x2F;a&gt; to manage my plugins but
+there is a drawback: it is quite slow itself (mostly written in shell script and
+Perl) and thus the shell start time is a bit slower. I also tried
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;getantibody&#x2F;antibody&quot;&gt;antibody&lt;&#x2F;a&gt; which is written in Go and thus much faster, but not all
+of my plugins were working properly when I tried them with antibody and also its
+syntax is very verbose when it comes to managing plugins bundled with
+&lt;code&gt;oh-my-zsh&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&quot;&gt;oh-my-zsh&lt;&#x2F;a&gt; is a configuration framework and a bunch of plugins for
+&lt;code&gt;zsh&lt;&#x2F;code&gt;. Those include additional autocompletion, coloring man pages and so on.&lt;&#x2F;p&gt;
+&lt;p&gt;This is an example of how to use &lt;code&gt;antigen&lt;&#x2F;code&gt; and &lt;code&gt;zsh&lt;&#x2F;code&gt; altogether (place this in
+your &lt;code&gt;~&#x2F;.zshrc&lt;&#x2F;code&gt; - the main &lt;code&gt;zsh&lt;&#x2F;code&gt; configuration file):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;source&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;usr&#x2F;local&#x2F;share&#x2F;antigen&#x2F;antigen.zsh
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Use oh-my-zsh
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;antigen&lt;&#x2F;span&gt;&lt;span&gt; use oh-my-zsh
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Include an oh-my-zsh plugin
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;antigen&lt;&#x2F;span&gt;&lt;span&gt; bundle git
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Include a plugin from GitHub
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;antigen&lt;&#x2F;span&gt;&lt;span&gt; bundle zsh-users&#x2F;zsh-autosuggestions
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;You can find the whole list of plugins I use in &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;eugene-babichenko&#x2F;a8937d2c1a2f8b94b382103c093c8170&quot;&gt;this gist&lt;&#x2F;a&gt;, but I would
+like to highlight a couple of them:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zdharma&#x2F;fast-syntax-highlighting&quot;&gt;zdharma&#x2F;fast-syntax-highlighting&lt;&#x2F;a&gt; which is
+basically a faster version of
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zsh-users&#x2F;zsh-syntax-highlighting&quot;&gt;zsh-users&#x2F;zsh-syntax-highlighting&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;marzocchi&#x2F;zsh-notify&quot;&gt;marzocchi&#x2F;zsh-notify&lt;&#x2F;a&gt; - notifies you when a command that was
+running for a long time in a background shell had finished.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;sindresorhus&#x2F;pure&quot;&gt;sindresorhus&#x2F;pure&lt;&#x2F;a&gt; - my favorite &lt;code&gt;zsh&lt;&#x2F;code&gt; prompt.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Convenient Rust crates with procedural macros and runnable code</title>
+        <published>2019-05-22T13:00:00+03:00</published>
+        <updated>2019-05-22T13:00:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2019/05/22/proc-macros-mixed-with-simple-crates/"/>
+        <id>https://eugene-babichenko.github.io/blog/2019/05/22/proc-macros-mixed-with-simple-crates/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2019/05/22/proc-macros-mixed-with-simple-crates/">&lt;p&gt;Procedural macros in Rust are a great thing for many purposes (implementing
+custom derives, domain-specific languages inside Rust, etc). However, the use of
+procedural macros imposes one very inconvenient constraint: a crate that defines
+procedural macros can export nothing but procedural macros. This usually leads
+us to usi multiple crates to do exactly one thing (remember &lt;code&gt;serde&lt;&#x2F;code&gt; and
+&lt;code&gt;serde_derive&lt;&#x2F;code&gt;?). In this article, I will review an approach to this problem I
+have seen in the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang-nursery&#x2F;failure&quot;&gt;&lt;code&gt;failure&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; crate that allows us to import exactly one
+crate.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-project-structure&quot;&gt;The project structure&lt;&#x2F;h2&gt;
+&lt;p&gt;All libraries I have seen so far rely on workspaces when they need to build a
+&quot;simple&quot; crate and a &lt;code&gt;proc-macro&lt;&#x2F;code&gt; crate. The generic structure for that is:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;workspace
+&lt;&#x2F;span&gt;&lt;span&gt;├── lib_crate&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;├── proc_macro_crate&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;└── Cargo.toml
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;with &lt;code&gt;Cargo.toml&lt;&#x2F;code&gt; that looks like that:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[workspace]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;members &lt;&#x2F;span&gt;&lt;span&gt;=  [&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;lib_crate&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;proc_macro_crate&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;]
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Usually, &lt;code&gt;lib_crate&lt;&#x2F;code&gt; contains the definitions of traits, structures and
+procedures and &lt;code&gt;proc_macro_crate&lt;&#x2F;code&gt; contains procedural macros that generate code
+which reuses definitions from &lt;code&gt;lib_crate&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-actual-trick&quot;&gt;The actual trick&lt;&#x2F;h2&gt;
+&lt;p&gt;In many libraries what you need to do is to import two crates:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;macro_use&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extern crate&lt;&#x2F;span&gt;&lt;span&gt; proc_macro_crate;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extern crate&lt;&#x2F;span&gt;&lt;span&gt; lib_crate;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;If you don&#x27;t want your users to do that, you can use a pretty simple hack. Cargo
+does not prohibit to re-export procedural macros, so you can just re-export them
+in your &lt;code&gt;lib_crate&lt;&#x2F;code&gt;!&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;lib_crate&#x2F;Cargo.toml&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[dependencies]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proc_macro_crate &lt;&#x2F;span&gt;&lt;span&gt;= { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;path &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;..&#x2F;proc_macro_crate&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.1.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; }
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;lib_crate&#x2F;src&#x2F;lib.rs&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;macro_use&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extern crate&lt;&#x2F;span&gt;&lt;span&gt; proc_macro_crate;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;pub use &lt;&#x2F;span&gt;&lt;span&gt;proc_macro_crate::*;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;As they do not need to import two separate crates anymore &lt;code&gt;Cargo.toml&lt;&#x2F;code&gt; and their
+code look a bit cleaner.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Analyzing metrics from InfluxDB with Pandas</title>
+        <published>2019-01-30T10:35:00+03:00</published>
+        <updated>2019-01-30T10:35:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2019/01/30/analyzing-metrics-from-influxdb-with-pandas/"/>
+        <id>https://eugene-babichenko.github.io/blog/2019/01/30/analyzing-metrics-from-influxdb-with-pandas/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2019/01/30/analyzing-metrics-from-influxdb-with-pandas/">&lt;p&gt;Our team recently started using the &lt;a href=&quot;https:&#x2F;&#x2F;www.influxdata.com&#x2F;time-series-platform&#x2F;&quot;&gt;InfluxData stack&lt;&#x2F;a&gt; to collect metrics
+from our apps (we may transfer logs and other time-series stuff to it, but
+that&#x27;s another story) and here is one feature that made me absolutely to fall in
+love with InfluxDB — the official &lt;a href=&quot;https:&#x2F;&#x2F;pandas.pydata.org&quot;&gt;Pandas&lt;&#x2F;a&gt; &lt;a href=&quot;https:&#x2F;&#x2F;influxdb-python.readthedocs.io&#x2F;en&#x2F;latest&#x2F;examples.html#tutorials-pandas&quot;&gt;integration&lt;&#x2F;a&gt;. In this
+blog post I will briefly tell you what is so amazing about this integration and
+why you definitely should try it.&lt;&#x2F;p&gt;
+&lt;p&gt;First of all, let&#x27;s start with the installation of what we need for this
+tutorial:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;pip3 install influxdb pandas seaborn
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;seaborn.pydata.org&quot;&gt;&lt;code&gt;seaborn&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; is a nice wrapper around &lt;a href=&quot;https:&#x2F;&#x2F;matplotlib.org&quot;&gt;&lt;code&gt;matplotlib&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; that provides
+developers with some routines related to plotting their data and stats.&lt;&#x2F;p&gt;
+&lt;p&gt;Having that installed and the InfluxDB instance running let&#x27;s get started with
+the actual coding.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;influxdb &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;DataFrameClient
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;client = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DataFrameClient&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;localhost&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# DB server hostname
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1000&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# DB server port
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;lrdata&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# DB user
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;12345678&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Password
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;metrics&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# DB name
+&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Here we fetch the execution timings for a hypothetical JSON RPC method
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# providing registration to the service. This uses InfluxQL.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# NOTE: This function returns a Pandas dataframe!
+&lt;&#x2F;span&gt;&lt;span&gt;res = client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;query&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;select &amp;quot;execution_time&amp;quot; from &amp;quot;rpc_api.register&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;res = res[&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rpc_api.register&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;]
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now we have a Pandas dataframe and we can easily fetch some statistics from it:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;mean_time = res.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mean&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;median_time = res.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;median&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And we won&#x27;t stop with that! Let&#x27;s build some histogram and plots that will
+give us more insight into the performance:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;seaborn
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# We can build a histogram
+&lt;&#x2F;span&gt;&lt;span&gt;seaborn.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;distplot&lt;&#x2F;span&gt;&lt;span&gt;(res)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Or just draw all measures in a single plot
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 1. Add index (timestamps) as a separate column
+&lt;&#x2F;span&gt;&lt;span&gt;res[&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;time&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;] = res.index
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 2. Draw the actual plot
+&lt;&#x2F;span&gt;&lt;span&gt;seaborn.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lineplot&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;=&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;time&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span&gt;=&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;execution_time&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;data&lt;&#x2F;span&gt;&lt;span&gt;=res)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# CDF is also easy and sometimes easier to read than histograms
+&lt;&#x2F;span&gt;&lt;span&gt;seaborn.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;distplot&lt;&#x2F;span&gt;&lt;span&gt;(res, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hist&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;False&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;kde_kws&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dict&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cumulative&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span&gt;))
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Use &lt;code&gt;.get_figure().savefig(&#x27;plot_name.png&#x27;)&lt;&#x2F;code&gt; on any of the plotting expressions
+to save your plots to files.&lt;&#x2F;p&gt;
+&lt;p&gt;You can check out how it works in &lt;a href=&quot;https:&#x2F;&#x2F;ipython.org&#x2F;notebook.html&quot;&gt;IPython Notebook&lt;&#x2F;a&gt; in &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;eugene-babichenko&#x2F;990bfc1bb7d5455a931d3e6348fc2cf0&quot;&gt;this Gist&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;So as you can see you can extract and visualize your metrics statistics from
+InfluxDB with a couple lines of Python. Have fun!&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Using CLion to develop C&#x2F;C++ applications in Docker (or any other remote development)</title>
+        <published>2018-12-31T19:35:00+03:00</published>
+        <updated>2018-12-31T19:35:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2018/12/31/clion-and-docker/"/>
+        <id>https://eugene-babichenko.github.io/blog/2018/12/31/clion-and-docker/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2018/12/31/clion-and-docker/">&lt;p&gt;We often use Docker in development for a variety of reasons: to work on the
+production-like environment, to isolate the application, etc. In particular, I
+use Docker for Mac to develop applications that are intended to be run on Linux.
+Along with bash scripts to set up the environment, it allows not to work with
+VMs (well, virtually, because Docker for Mac runs in the VM that is not exposed
+to an end-user) and also gives me a bunch of isolated lightweight working
+environments. Unfortunately, there is a downside: poor IDE support. And while
+IDEs like PyCharm handle that pretty well with its &lt;a href=&quot;https:&#x2F;&#x2F;www.jetbrains.com&#x2F;help&#x2F;pycharm&#x2F;using-docker-as-a-remote-interpreter.html&quot;&gt;Remote Interpreters&lt;&#x2F;a&gt;
+feature, CLion have not gone that far yet. However, there is the &lt;a href=&quot;https:&#x2F;&#x2F;www.jetbrains.com&#x2F;help&#x2F;clion&#x2F;remote-projects-support.html&quot;&gt;Remote
+Projects&lt;&#x2F;a&gt; feature that allows us to work on any machine that exposes SSH and
+ports required by debuggers and any other software. In this tutorial, I will
+review the Docker-based approach. However, you can omit the Docker part and go
+with the same setup for your VM or remote server.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;prerequisites&quot;&gt;Prerequisites&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;CLion 2018.3&lt;&#x2F;li&gt;
+&lt;li&gt;Docker&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;building-your-dockerfile&quot;&gt;Building your Dockerfile&lt;&#x2F;h2&gt;
+&lt;p&gt;First of all, we need to define what will you need to install into your
+development environment:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;rsync&lt;&#x2F;code&gt; if your host is macOS or Linux;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;make&lt;&#x2F;code&gt;, &lt;code&gt;cmake&lt;&#x2F;code&gt;, &lt;code&gt;gdb&lt;&#x2F;code&gt; and compilers -- those are essential;&lt;&#x2F;li&gt;
+&lt;li&gt;SSH server;&lt;&#x2F;li&gt;
+&lt;li&gt;Optionally you can add &lt;code&gt;valgrind&lt;&#x2F;code&gt; and any other dependency required by your
+process.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;So let&#x27;s write a simple Dockerfile:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;dockerfile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-dockerfile &quot;&gt;&lt;code class=&quot;language-dockerfile&quot; data-lang=&quot;dockerfile&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;FROM&lt;&#x2F;span&gt;&lt;span&gt; ubuntu:bionic
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;RUN &lt;&#x2F;span&gt;&lt;span&gt;apt-get update &amp;amp;&amp;amp; \
+&lt;&#x2F;span&gt;&lt;span&gt;    apt-get install -y build-essential cmake gdb openssh-server python
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# This allows you to log in as the root user and your password will be `root`
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;RUN &lt;&#x2F;span&gt;&lt;span&gt;echo &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;root:root&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; | chpasswd &amp;amp;&amp;amp; \
+&lt;&#x2F;span&gt;&lt;span&gt;    mkdir &#x2F;var&#x2F;run&#x2F;sshd &amp;amp;&amp;amp; \
+&lt;&#x2F;span&gt;&lt;span&gt;    echo &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;PermitRootLogin yes&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt;&amp;gt; &#x2F;etc&#x2F;ssh&#x2F;sshd_config
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;EXPOSE &lt;&#x2F;span&gt;&lt;span&gt;22 63342
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# -D flag runs sshd in foreground
+&lt;&#x2F;span&gt;&lt;span&gt;CMD [&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;usr&#x2F;sbin&#x2F;sshd&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-D&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;]
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Build it, tag it, run it:
+&lt;code&gt;docker run -p 2222:22 -p 63342:63342 --security-opt seccomp:unconfined yourimagetag&lt;&#x2F;code&gt;.
+&lt;code&gt;seccomp:unconfined&lt;&#x2F;code&gt; is required to run a debugger.&lt;&#x2F;p&gt;
+&lt;p&gt;To verify that you have access to SSH run &lt;code&gt;ssh -p 2222 root@localhost&lt;&#x2F;code&gt;, you
+should be able to log in with the password root. If you can, then you can move
+to the next step.&lt;&#x2F;p&gt;
+&lt;p&gt;You can also combine this approach with &lt;a href=&quot;https:&#x2F;&#x2F;docs.docker.com&#x2F;develop&#x2F;develop-images&#x2F;multistage-build&#x2F;&quot;&gt;Docker multi-stage builds&lt;&#x2F;a&gt; to
+separate your environments.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;clion-setup&quot;&gt;CLion setup&lt;&#x2F;h2&gt;
+&lt;p&gt;This part mostly repeats the &lt;a href=&quot;https:&#x2F;&#x2F;www.jetbrains.com&#x2F;help&#x2F;clion&#x2F;remote-projects-support.html&quot;&gt;official guide&lt;&#x2F;a&gt; to CLion Remote Project.&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Add a new toolchain. Near the &lt;strong&gt;Name&lt;&#x2F;strong&gt; field select the &lt;strong&gt;Remote host
+option&lt;&#x2F;strong&gt;. Then enter the SSH credentials of the running container and wait
+until CLion detects all the software.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;assets&#x2F;2018-12-31-clion-and-docker-image-1.png&quot; alt=&quot;CLion remote toolchain setup&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Add a new CMake configuration. You just need to copy the existing one and
+change the toolchain to the one you have added in the previous step.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;assets&#x2F;2018-12-31-clion-and-docker-image-2.png&quot; alt=&quot;CLion custom toolchain configuration&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Finally, wait for some time until CLion builds the index for the remote
+environment and switch to it in &lt;strong&gt;Run Configurations&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;assets&#x2F;2018-12-31-clion-and-docker-image-4.png&quot; alt=&quot;Selecting the appropriate run configration&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;&#x2F;h2&gt;
+&lt;p&gt;Congrats, now you are all set for a painless Docker&#x2F;remote&#x2F;VM-based C++
+development! This is a pretty good approach until full-featured Docker support
+arrives in CLion. Now when you want to develop your dockerized application you
+just need to run your container and wait for CLion to connect to it.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;acknowledgements&quot;&gt;Acknowledgements&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http:&#x2F;&#x2F;ebagdasa.me&#x2F;2017-01-20&#x2F;docker-clion-debugging&#x2F;&quot;&gt;C-program with CLion and Docker containers&lt;&#x2F;a&gt; -- for the general idea.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;useful-links&quot;&gt;Useful links&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.jetbrains.com&#x2F;help&#x2F;clion&#x2F;remote-projects-support.html&quot;&gt;CLion Remote Projects&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Finishing aiohttp websocket handlers cleanly when a client closed a socket incorrectly</title>
+        <published>2018-11-09T13:00:00+03:00</published>
+        <updated>2018-11-09T13:00:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2018/11/09/aiohttp-server-unclean-websocket-exit/"/>
+        <id>https://eugene-babichenko.github.io/blog/2018/11/09/aiohttp-server-unclean-websocket-exit/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2018/11/09/aiohttp-server-unclean-websocket-exit/">&lt;p&gt;You might have noticed that there may be some troubles when an aiohttp was not
+closed by a client in a clean way. When you follow the aiohttp
+&lt;a href=&quot;https:&#x2F;&#x2F;docs.aiohttp.org&#x2F;en&#x2F;stable&#x2F;web_quickstart.html#websockets&quot;&gt;official guide&lt;&#x2F;a&gt;
+on websockets but errors are not processed in the right way. Here&#x27;s a little
+trick that might help you with that.&lt;&#x2F;p&gt;
+&lt;p&gt;So let&#x27;s recall the aiohttp example:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;async def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;websocket_handler&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;request&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    ws = web.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;WebSocketResponse&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span&gt;ws.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prepare&lt;&#x2F;span&gt;&lt;span&gt;(request)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;async for &lt;&#x2F;span&gt;&lt;span&gt;msg &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;ws:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;msg.type == aiohttp.WSMsgType.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TEXT&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;msg.data == &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;close&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;:
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span&gt;ws.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;close&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span&gt;ws.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;send_str&lt;&#x2F;span&gt;&lt;span&gt;(msg.data + &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;answer&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;elif &lt;&#x2F;span&gt;&lt;span&gt;msg.type == aiohttp.WSMsgType.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ERROR&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ws connection closed with exception &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; %
+&lt;&#x2F;span&gt;&lt;span&gt;                  ws.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;exception&lt;&#x2F;span&gt;&lt;span&gt;())
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;websocket connection closed&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;ws
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Seems like nothing is wrong with that except you don’t receive an appropriate
+error message and it looks like code after the loop is never executed if just
+terminate a client app without properly closing the socket.&lt;&#x2F;p&gt;
+&lt;p&gt;The tricky part here is that when your websocket was closed uncleanly you get
+the &lt;code&gt;asyncio.CancelledError&lt;&#x2F;code&gt;. So all you need to perform the code after the loop
+is to wrap the loop in a try-except statement:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;async def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;websocket_handler&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;request&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    ws = web.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;WebSocketResponse&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span&gt;ws.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prepare&lt;&#x2F;span&gt;&lt;span&gt;(request)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;async for &lt;&#x2F;span&gt;&lt;span&gt;msg &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;ws:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;msg.type == aiohttp.WSMsgType.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TEXT&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;msg.data == &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;close&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;:
+&lt;&#x2F;span&gt;&lt;span&gt;                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span&gt;ws.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;close&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span&gt;ws.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;send_str&lt;&#x2F;span&gt;&lt;span&gt;(msg.data + &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;answer&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;elif &lt;&#x2F;span&gt;&lt;span&gt;msg.type == aiohttp.WSMsgType.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ERROR&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ws connection closed with exception &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; %
+&lt;&#x2F;span&gt;&lt;span&gt;                      ws.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;exception&lt;&#x2F;span&gt;&lt;span&gt;())
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;except &lt;&#x2F;span&gt;&lt;span&gt;asyncio.CancelledError:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Unclean exit by the client&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Now this is always executed
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;websocket connection closed&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;ws
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Setting up pre-commit git hook to check Rust code formatting</title>
+        <published>2018-11-08T17:05:00+03:00</published>
+        <updated>2018-11-08T17:05:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2018/11/08/rustfmt-git-hook/"/>
+        <id>https://eugene-babichenko.github.io/blog/2018/11/08/rustfmt-git-hook/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2018/11/08/rustfmt-git-hook/">&lt;p&gt;The whole thing this article is about is pretty common. But it might save you
+some time when you set up a Rust repository. Quick recap: git hooks are scripts
+that are triggered by git on certain actions. Here we are interested in the
+pre-commit hook which is fired before you enter the commit message. We will use
+it to check the code style with &lt;code&gt;rustfmt&lt;&#x2F;code&gt; which you need to install first:
+&lt;code&gt;cargo install rustfmt&lt;&#x2F;code&gt;. Try running it with the following command:
+&lt;code&gt;cargo fmt -- --force --write-mode diff&lt;&#x2F;code&gt;. This will output the suggested patch
+to fix your codestyle. In-place fixes can be performed with the
+&lt;code&gt;cargo fmt -- --force --write-mode overwrite&lt;&#x2F;code&gt; command.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;eugene-babichenko&#x2F;ca9645fa8b579b9c56668f7b0eb74095&quot;&gt;Github Gist with the materials of this tutorial&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;writing-the-hook&quot;&gt;Writing the hook&lt;&#x2F;h2&gt;
+&lt;p&gt;So let&#x27;s wrap it in a simple bash script that will check files staged for
+commit:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;#!&#x2F;bin&#x2F;bash
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;HAS_ISSUES&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FIRST_FILE&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt; file &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; diff&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --name-only --staged&lt;&#x2F;span&gt;&lt;span&gt;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;do
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FMT_RESULT&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rustfmt --skip-children --force --write-mode&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; diff &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;file &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;dev&#x2F;null &lt;&#x2F;span&gt;&lt;span&gt;|| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;[ &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FMT_RESULT&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; != &amp;quot;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;then
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;[ &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FIRST_FILE -eq&lt;&#x2F;span&gt;&lt;span&gt; 0 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;then
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;-n &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fi
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;-n &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;file&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;HAS_ISSUES&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FIRST_FILE&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fi
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;done
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;[ &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;HAS_ISSUES -eq&lt;&#x2F;span&gt;&lt;span&gt; 0 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;then
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span&gt; 0
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fi
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;. Your code has formatting issues in files listed above. Format your code with &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;make format&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; or call rustfmt manually.&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span&gt; 1
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Explanation:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git diff --name-only --staged&lt;&#x2F;code&gt; gather names of staged files;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;rustfmt --skip-children --force --write-mode diff $file 2&amp;gt;&#x2F;dev&#x2F;null || true&lt;&#x2F;code&gt;
+does the check magic:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--skip-children&lt;&#x2F;code&gt; -- this flag is required to not check submodules of a
+module. This is here because those files may be uncommitted but cause the
+check to fail.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;--force&lt;&#x2F;code&gt; -- just a bypass for the warning that suggests installing the
+nightly version of &lt;code&gt;rustfmt&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;--write-mode diff&lt;&#x2F;code&gt; -- we check that the diff is empty which actually means
+that the code style is OK.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;2&amp;gt;&#x2F;dev&#x2F;null || true&lt;&#x2F;code&gt; -- &lt;code&gt;rustfmt&lt;&#x2F;code&gt; signalizes that it cannot format some
+lines (for example, very long constant strings) with error messages. With
+that, we suppress error messages and make the command to exit with 0. That
+might not be a very good practice but it works for me. Actually, long
+strings were the only problem.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The rest of the script is pretty trivial and is all about pretty-printing the
+result of the check.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;putting-it-to-work&quot;&gt;Putting it to work&lt;&#x2F;h2&gt;
+&lt;p&gt;When working with got hooks you need to keep in mind that you need to share
+them. My approach is to create the folder called &lt;code&gt;.githooks&lt;&#x2F;code&gt; and put all scripts
+into it. For example, the above script is saved under the name &lt;code&gt;pre-commit&lt;&#x2F;code&gt;.
+Don&#x27;t forget to make it executable!&lt;&#x2F;p&gt;
+&lt;p&gt;To make git see hooks in &lt;code&gt;.githooks&lt;&#x2F;code&gt; run &lt;code&gt;git config core.hooksPath .githooks&lt;&#x2F;code&gt;.
+I put this command to my &lt;code&gt;Makefile&lt;&#x2F;code&gt; to make it runnable with &lt;code&gt;make init&lt;&#x2F;code&gt;. I also
+put a script under &lt;code&gt;make format&lt;&#x2F;code&gt; to quickly fix everything.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;final-result&quot;&gt;Final result&lt;&#x2F;h2&gt;
+&lt;p&gt;Now if you have any formatting issues git will let you know!&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;❯ git commit
+&lt;&#x2F;span&gt;&lt;span&gt;build.rs, src&#x2F;main.rs. Your code has formatting issues in files listed above.
+&lt;&#x2F;span&gt;&lt;span&gt;Format your code with `make format` or call rustfmt manually.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;You can also slightly modify this script by using
+&lt;code&gt;git diff --name-only HEAD~1 HEAD&lt;&#x2F;code&gt; to fetch the list of files to perform code
+style check on your CI system.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Patching fonts to get powerline symbols</title>
+        <published>2018-08-17T16:25:00+03:00</published>
+        <updated>2018-08-17T16:25:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2018/08/17/powerline-fonts-patching/"/>
+        <id>https://eugene-babichenko.github.io/blog/2018/08/17/powerline-fonts-patching/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2018/08/17/powerline-fonts-patching/">&lt;p&gt;Many shell&#x2F;vim&#x2F;etc extensions require powerline fonts to be installed in your system. Usually, people stick with fonts available in the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;powerline&#x2F;fonts&quot;&gt;powerline repository&lt;&#x2F;a&gt;, but if you want to continue using your favorite font while taking benefits of powerline symbols?&lt;&#x2F;p&gt;
+&lt;p&gt;Pretty obvious solution: just patch it!&lt;&#x2F;p&gt;
+&lt;p&gt;Here is what you&#x27;ll need:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Python 2.x.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;fontforge&#x2F;fontforge&quot;&gt;Fontforge&lt;&#x2F;a&gt; with Python support. On a Mac, it is pretty easy to install: &lt;code&gt;brew install fontforge --with-python&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;Powerline &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;powerline&#x2F;fontpatcher&quot;&gt;font patcher&lt;&#x2F;a&gt;. Just clone it: &lt;code&gt;git clone --depth=1 https:&#x2F;&#x2F;github.com&#x2F;powerline&#x2F;fontpatcher.git&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;Your font file.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;After you have everything installed, go to the &lt;code&gt;scripts&lt;&#x2F;code&gt; directory of &lt;code&gt;powerline&lt;&#x2F;code&gt; repository and run &lt;code&gt;.&#x2F;powerline &amp;lt;your_font_file_name&amp;gt;&lt;&#x2F;code&gt;. For instance, I did &lt;code&gt;.&#x2F;powerline-fontpatcher &#x2F;System&#x2F;Library&#x2F;Fonts&#x2F;Monaco.dfont&lt;&#x2F;code&gt; to patch the default monospace font of macOS. Then you&#x27;ll get your patched font in the directory you&#x27;re currently at and that&#x27;s it! You just need to install this font and enjoy your favorite font with new powerline symbols.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Building tiny Docker images with multi-stage builds</title>
+        <published>2018-08-11T18:42:00+03:00</published>
+        <updated>2018-08-11T18:42:00+03:00</updated>
+        
+        <author>
+          <name>
+            
+              Eugene Babichenko
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://eugene-babichenko.github.io/blog/2018/08/11/tiny-docker-images/"/>
+        <id>https://eugene-babichenko.github.io/blog/2018/08/11/tiny-docker-images/</id>
+        
+        <content type="html" xml:base="https://eugene-babichenko.github.io/blog/2018/08/11/tiny-docker-images/">&lt;p&gt;The big issue with Docker images is that they tend to get &lt;strong&gt;really&lt;&#x2F;strong&gt; big. Big projects can have so much build time dependencies and generated garbage that we may end up with images of, let&#x27;s say, from thousands of megabytes to gigabytes. This can make virtualization pretty painful because it hurts just to wait until the image is downloaded from a Docker registry.&lt;&#x2F;p&gt;
+&lt;p&gt;What can help us to get around those issues?&lt;&#x2F;p&gt;
+&lt;p&gt;Let&#x27;s start with an example. Suppose we have a Python application that uses some crypto stuff and runs a web server inside of it.&lt;&#x2F;p&gt;
+&lt;p&gt;So here is our &lt;code&gt;Dockerfile&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;dockerfile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-dockerfile &quot;&gt;&lt;code class=&quot;language-dockerfile&quot; data-lang=&quot;dockerfile&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# This base image contains stuff like OpenSSL and all of *-dev libraries
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;FROM&lt;&#x2F;span&gt;&lt;span&gt; python:latest
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;WORKDIR &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;project
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Copy and install the list of dependencies separately to speed the things up
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;COPY&lt;&#x2F;span&gt;&lt;span&gt; .&#x2F;requirements.txt .
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;RUN &lt;&#x2F;span&gt;&lt;span&gt;pip3 install -r .&#x2F;requirements.txt
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# The rest is not interesting for us
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And this is our &lt;code&gt;requirements.txt&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;cryptography
+&lt;&#x2F;span&gt;&lt;span&gt;aiohttp
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Pretty simple, huh? However, when we build this and check out the size of the image we have... Oops, &lt;strong&gt;956MB&lt;&#x2F;strong&gt; for a project with only two explicitly specified dependencies.&lt;&#x2F;p&gt;
+&lt;p&gt;What we can do is to move to a slimmer base image. The best fit for Docker images is &lt;a href=&quot;https:&#x2F;&#x2F;alpinelinux.org&#x2F;&quot;&gt;Alpine Linux&lt;&#x2F;a&gt;. With only Busybox, &lt;a href=&quot;https:&#x2F;&#x2F;www.musl-libc.org&#x2F;&quot;&gt;musl&lt;&#x2F;a&gt; (libc implementation), &lt;a href=&quot;https:&#x2F;&#x2F;www.libressl.org&#x2F;&quot;&gt;libressl&lt;&#x2F;a&gt; (OpenSSL compatible crypto) and apk (package manager) it is &lt;strong&gt;5MB&lt;&#x2F;strong&gt; unpacked.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;dockerfile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-dockerfile &quot;&gt;&lt;code class=&quot;language-dockerfile&quot; data-lang=&quot;dockerfile&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;FROM&lt;&#x2F;span&gt;&lt;span&gt; alpine:edge
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;RUN &lt;&#x2F;span&gt;&lt;span&gt;apk --update --no-cache add pkgconf build-base autoconf automake python3 python3-dev libffi-dev libressl-dev
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;COPY&lt;&#x2F;span&gt;&lt;span&gt; .&#x2F;requirements.txt .
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;RUN &lt;&#x2F;span&gt;&lt;span&gt;pip3 install -r .&#x2F;requirements.txt
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Here we need to handle a lot of dependencies manually, but now it&#x27;s &lt;strong&gt;295MB&lt;&#x2F;strong&gt;. We just cut down our image by more than &lt;strong&gt;3 times&lt;&#x2F;strong&gt;!&lt;&#x2F;p&gt;
+&lt;p&gt;Now we can move further. We definitely don&#x27;t need all of the dependencies that are required for building the project. Here are two options for how to deal with them:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Remove them manually (apk even have syntactic sugar for that called virtual packages) and then squash layers together by using software like &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;jwilder&#x2F;docker-squash&quot;&gt;docker-squash&lt;&#x2F;a&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;Instead, we can use the feature of Docker called &lt;a href=&quot;https:&#x2F;&#x2F;docs.docker.com&#x2F;develop&#x2F;develop-images&#x2F;multistage-build&#x2F;&quot;&gt;multi-stage builds&lt;&#x2F;a&gt;.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;The last variant seems better because it doesn&#x27;t involve additional software, so let&#x27;s try it:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;dockerfile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-dockerfile &quot;&gt;&lt;code class=&quot;language-dockerfile&quot; data-lang=&quot;dockerfile&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# In this stage called `build` we install just everything and build the project.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;FROM&lt;&#x2F;span&gt;&lt;span&gt; alpine:edge &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;build
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;RUN &lt;&#x2F;span&gt;&lt;span&gt;apk --update --no-cache add pkgconf build-base autoconf automake python3 python3-dev libffi-dev libressl-dev
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Create a custom directory for installing Python packages
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;RUN &lt;&#x2F;span&gt;&lt;span&gt;mkdir &#x2F;install
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ENV &lt;&#x2F;span&gt;&lt;span&gt;PYTHONUSERBASE=&#x2F;install
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;COPY&lt;&#x2F;span&gt;&lt;span&gt; .&#x2F;requirements.txt .
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;RUN &lt;&#x2F;span&gt;&lt;span&gt;pip3 install --user -r .&#x2F;requirements.txt
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Start an image from scratch...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;FROM&lt;&#x2F;span&gt;&lt;span&gt; alpine:edge &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;release
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Install only necessary dependencies
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;RUN &lt;&#x2F;span&gt;&lt;span&gt;apk --update --no-cache add python3 libffi
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Copy installed dependencies from the previous stage
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;COPY&lt;&#x2F;span&gt;&lt;span&gt; --from=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;build&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;install &#x2F;install
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ENV &lt;&#x2F;span&gt;&lt;span&gt;PYTHONUSERBASE=&#x2F;install
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And now we have just &lt;strong&gt;70.5MB&lt;&#x2F;strong&gt;! The image size was cut down &lt;strong&gt;more than 10 times&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;To sum up, the approach for building a minimal Docker image is the following:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Use some minimal image as the base. Alpine Linux is a good one.&lt;&#x2F;li&gt;
+&lt;li&gt;Create a build stage with all of the dependencies required for both building and running your software.&lt;&#x2F;li&gt;
+&lt;li&gt;Build your software in this image.&lt;&#x2F;li&gt;
+&lt;li&gt;Then create a separate build stage from the base image.&lt;&#x2F;li&gt;
+&lt;li&gt;Install the minimal set of dependencies required for running your application.&lt;&#x2F;li&gt;
+&lt;li&gt;Use the &lt;code&gt;copy from&lt;&#x2F;code&gt; feature to copy the built software to the release image.&lt;&#x2F;li&gt;
+&lt;li&gt;...&lt;&#x2F;li&gt;
+&lt;li&gt;PROFIT&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+        
+    </entry>
+</feed>

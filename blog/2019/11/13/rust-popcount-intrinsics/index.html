@@ -1,0 +1,48 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="width=device-width,initial-scale=1.0" name=viewport><meta content="index, follow" name=robots><link href=https://eugene-babichenko.github.io/rss.xml rel=alternate title=RSS type=application/rss+xml><title>Eugene Babichenko | How to force Rust compiler to use several x86 instructions (popcount, etc)</title><link as=style href=https://eugene-babichenko.github.io/css/style.css rel=preload><link crossorigin href=https://raw.githack.com/Speyll/suCSS/main/reset-min.css rel=stylesheet><link crossorigin href=https://raw.githack.com/Speyll/suCSS/main/suCSS-min.css rel=stylesheet><link href=https://eugene-babichenko.github.io/css/style.css rel=stylesheet><link href=https://eugene-babichenko.github.io/css/custom.css rel=stylesheet><link href=https://eugene-babichenko.github.io/favicon.ico rel=icon><body><nav id=nav-bar><a href=/> /home/ </a><a href=/blog> /blog/ </a><a href=https://github.com/eugene-babichenko> /github/ </a><a href=https://standwithukraine.com.ua/> /🇺🇦 Support Ukraine/ </a><div aria-label="Toggle theme" class=theme-toggle data-icon-base=https://eugene-babichenko.github.io/icons.svg data-icon-dark=#darkMode data-icon-light=#lightMode data-sound-src=https://eugene-babichenko.github.io/click.ogg id=theme-toggle role=button tabindex=0><svg class=icon><use id=theme-icon></use></svg></div></nav><main><article class=post><header class=post-header><time datetime=2019-11-13T21:00:00+02:00>Published on: <span class=accent-data>2019-11-13</span> </time><h1>How to force Rust compiler to use several x86 instructions (popcount, etc)</h1></header><div class=post-content><p>Sometimes you need tricky operations on your binary data like counting bits, leading or trailing zeros and so on (for example, when you want to implement <a href=https://en.wikipedia.org/wiki/Hash_array_mapped_trie>HAMT</a> or sparse arrays). In Rust this is achieved by using methods like <code>.count_ones()</code> and <code>.trailing_zeros()</code>. The problem with those methods is that they are usually expanded in a huge pile of assembler code. But x86 (and some other architectures) have instructions to perform these counts (specifically, <code>popcnt</code> and <code>tzcnt</code>) and they are really fast (<a href=https://software.intel.com/en-us/forums/intel-isa-extensions/topic/289168>1 cycle for execution and latency of 3 cycles</a>). Today we will learn how to force Rust compiler to use those instructions and what are the possible pitfalls.<p>Let's start with an example. Here's the code that finds population counts of random integers (<a href="https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=2551cbb6a41adad36e45bc50bf26c3bb">on Rust Playground</a>):<pre class=language-rust data-lang=rust style=color:#c0c5ce;background-color:#2b303b><code class=language-rust data-lang=rust><span style=color:#b48ead>use </span><span>rand::prelude::*;
+</span><span>
+</span><span style=color:#65737e>// this is only to have this function separately in the asm output
+</span><span>#[</span><span style=color:#bf616a>inline</span><span>(never)]
+</span><span style=color:#b48ead>fn </span><span style=color:#8fa1b3>count</span><span>(</span><span style=color:#bf616a>a</span><span>: </span><span style=color:#b48ead>u32</span><span>) -> </span><span style=color:#b48ead>u32 </span><span>{
+</span><span>    a.</span><span style=color:#96b5b4>count_ones</span><span>()
+</span><span>}
+</span><span>
+</span><span style=color:#b48ead>fn </span><span style=color:#8fa1b3>main</span><span>() {
+</span><span>    </span><span style=color:#b48ead>let</span><span> a: </span><span style=color:#b48ead>u32 </span><span>= </span><span style=color:#96b5b4>random</span><span>();
+</span><span>    println!("</span><span style=color:#d08770>{}</span><span>", </span><span style=color:#96b5b4>count</span><span>(a));
+</span><span>    println!("</span><span style=color:#d08770>{}</span><span>", </span><span style=color:#96b5b4>count</span><span>(a + </span><span style=color:#d08770>1</span><span>));
+</span><span>}
+</span></code></pre><p>And the <code>count</code> function looks like that:<pre style=color:#c0c5ce;background-color:#2b303b><code><span>playground::count:
+</span><span>	mov	eax, edi
+</span><span>	shr	eax
+</span><span>	and	eax, 1431655765
+</span><span>	sub	edi, eax
+</span><span>	mov	eax, edi
+</span><span>	and	eax, 858993459
+</span><span>	shr	edi, 2
+</span><span>	and	edi, 858993459
+</span><span>	add	edi, eax
+</span><span>	mov	eax, edi
+</span><span>	shr	eax, 4
+</span><span>	add	eax, edi
+</span><span>	and	eax, 252645135
+</span><span>	imul	eax, eax, 16843009
+</span><span>	shr	eax, 24
+</span><span>	ret
+</span></code></pre><p>Wow. A huge pile of instructions and magic numbers. This is clearly not something we would like to see, especially in performance-critical places. Let's make this a little bit better (<a href="https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=a91e315224c79f2d6c72bb85d3fdfe2d">on Rust Playground</a>):<pre class=language-rust data-lang=rust style=color:#c0c5ce;background-color:#2b303b><code class=language-rust data-lang=rust><span style=color:#b48ead>use </span><span>rand::prelude::*;
+</span><span>
+</span><span style=color:#65737e>// this is only to have this function separately in the asm output
+</span><span>#[</span><span style=color:#bf616a>inline</span><span>(never)]
+</span><span>#[</span><span style=color:#bf616a>cfg_attr</span><span>(target_arch = "</span><span style=color:#a3be8c>x86_64</span><span>", </span><span style=color:#bf616a>target_feature</span><span>(enable = "</span><span style=color:#a3be8c>popcnt</span><span>"))]
+</span><span style=color:#b48ead>unsafe fn </span><span style=color:#8fa1b3>count</span><span>(</span><span style=color:#bf616a>a</span><span>: </span><span style=color:#b48ead>u32</span><span>) -> </span><span style=color:#b48ead>u32 </span><span>{
+</span><span>    a.</span><span style=color:#96b5b4>count_ones</span><span>()
+</span><span>}
+</span><span>
+</span><span style=color:#b48ead>fn </span><span style=color:#8fa1b3>main</span><span>() {
+</span><span>    </span><span style=color:#b48ead>let</span><span> a: </span><span style=color:#b48ead>u32 </span><span>= </span><span style=color:#96b5b4>random</span><span>();
+</span><span>    println!("</span><span style=color:#d08770>{}</span><span>", </span><span style=color:#b48ead>unsafe </span><span>{ </span><span style=color:#96b5b4>count</span><span>(a) });
+</span><span>    println!("</span><span style=color:#d08770>{}</span><span>", </span><span style=color:#b48ead>unsafe </span><span>{ </span><span style=color:#96b5b4>count</span><span>(a + </span><span style=color:#d08770>1</span><span>) });
+</span><span>}
+</span></code></pre><p>And here is the assembly code of <code>count</code>:<pre style=color:#c0c5ce;background-color:#2b303b><code><span>playground::count:
+</span><span>	popcnt	eax, edi
+</span><span>	ret
+</span></code></pre><p>Only a single <a href=https://software.intel.com/en-us/forums/intel-isa-extensions/topic/289168>very fast</a> instruction! And that this will work with all integer types. There is a pitfall though: Rust requires us to mark functions as <code>unsafe</code> when we use <code>target_feature</code> so it makes sense to make functions using those features as small as possible.<p>Also, you can do something similar with <code>.trailing_zeros()</code> or <code>.leading_zeros()</code> by using <code>target_feature(enable = "bmi1")</code>.<p>To find feature names you can refer to architecture-specific <a href=https://doc.rust-lang.org/std/intrinsics/index.html>intrinsics documentation</a>.<p>That's all, hope you find it useful!</div></article></main><footer><hr><div id=footer-container><p>Made using <a rel="noopener noreferrer" href=https://github.com/Speyll/anemone target=_blank>anemone</a> Zola theme.<p><a title="face icons" href=https://www.flaticon.com/free-icons/face>Face icons created by Freepik - Flaticon</a><p>© 2018-2025 Eugene Babichenko</div></footer><script defer src=https://eugene-babichenko.github.io/js/script.js></script>

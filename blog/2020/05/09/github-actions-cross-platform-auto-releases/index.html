@@ -1,0 +1,61 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="width=device-width,initial-scale=1.0" name=viewport><meta content="index, follow" name=robots><link href=https://eugene-babichenko.github.io/rss.xml rel=alternate title=RSS type=application/rss+xml><title>Eugene Babichenko | Automated multi-platform releases with GitHub Actions</title><link as=style href=https://eugene-babichenko.github.io/css/style.css rel=preload><link crossorigin href=https://raw.githack.com/Speyll/suCSS/main/reset-min.css rel=stylesheet><link crossorigin href=https://raw.githack.com/Speyll/suCSS/main/suCSS-min.css rel=stylesheet><link href=https://eugene-babichenko.github.io/css/style.css rel=stylesheet><link href=https://eugene-babichenko.github.io/css/custom.css rel=stylesheet><link href=https://eugene-babichenko.github.io/favicon.ico rel=icon><body><nav id=nav-bar><a href=/> /home/ </a><a href=/blog> /blog/ </a><a href=https://github.com/eugene-babichenko> /github/ </a><a href=https://standwithukraine.com.ua/> /🇺🇦 Support Ukraine/ </a><div aria-label="Toggle theme" class=theme-toggle data-icon-base=https://eugene-babichenko.github.io/icons.svg data-icon-dark=#darkMode data-icon-light=#lightMode data-sound-src=https://eugene-babichenko.github.io/click.ogg id=theme-toggle role=button tabindex=0><svg class=icon><use id=theme-icon></use></svg></div></nav><main><article class=post><header class=post-header><time datetime=2020-05-09T15:20:00+03:00>Published on: <span class=accent-data>2020-05-09</span> </time><h1>Automated multi-platform releases with GitHub Actions</h1></header><div class=post-content><p>GitHub Actions allows you to create releases, build binaries, and upload them. Unfortunately, there is no official tutorial on how to create a release, build the code for multiple platforms, and upload binaries to the release. I will cover how to do that without any 3rd-party actions in this post. I assume that you are familiar with the basics of GitHub Actions.<h2 id=selecting-the-workflow-trigger>Selecting the workflow trigger</h2><p>First things first: let's select the trigger for our workflow. I <code>git</code> tags for versioning, and for simplicity they begin with <code>v</code>, so the simplest trigger we can use<pre class=language-yaml data-lang=yaml style=color:#c0c5ce;background-color:#2b303b><code class=language-yaml data-lang=yaml><span style=color:#d08770>on</span><span>:
+</span><span>  </span><span style=color:#bf616a>push</span><span>:
+</span><span>    </span><span style=color:#bf616a>tags</span><span>:
+</span><span>      - '</span><span style=color:#a3be8c>v[0-9]+.*</span><span>'
+</span></code></pre><p>Let's continue to defining our jobs.<h2 id=creating-the-release>Creating the release</h2><p>Since we are going to do multiple builds defined in a matrix, creating the new release should be obviously done in a separate job. GitHub has the official <a href=https://github.com/actions/create-release#example-workflow---create-a-release>example</a> for that. The only difference from the example is that we add the job output. This output will be used by build jobs to upload their results to the created release.<pre class=language-yaml data-lang=yaml style=color:#c0c5ce;background-color:#2b303b><code class=language-yaml data-lang=yaml><span>{% </span><span style=color:#a3be8c>raw %</span><span>}
+</span><span style=color:#bf616a>jobs</span><span>:
+</span><span>  </span><span style=color:#bf616a>create_release</span><span>:
+</span><span>    </span><span style=color:#bf616a>name</span><span>: </span><span style=color:#a3be8c>Create release
+</span><span>    </span><span style=color:#bf616a>runs-on</span><span>: </span><span style=color:#a3be8c>ubuntu-latest
+</span><span>    </span><span style=color:#65737e># Note this. We are going to use that in further jobs.
+</span><span>    </span><span style=color:#bf616a>outputs</span><span>:
+</span><span>      </span><span style=color:#bf616a>upload_url</span><span>: </span><span style=color:#a3be8c>${{ steps.create_release.outputs.upload_url }}
+</span><span>    </span><span style=color:#bf616a>steps</span><span>:
+</span><span>      - </span><span style=color:#bf616a>name</span><span>: </span><span style=color:#a3be8c>Create release
+</span><span>        </span><span style=color:#bf616a>id</span><span>: </span><span style=color:#a3be8c>create_release
+</span><span>        </span><span style=color:#bf616a>uses</span><span>: </span><span style=color:#a3be8c>actions/create-release@v1
+</span><span>        </span><span style=color:#bf616a>env</span><span>:
+</span><span>          </span><span style=color:#bf616a>GITHUB_TOKEN</span><span>: </span><span style=color:#a3be8c>${{ secrets.GITHUB_TOKEN }}
+</span><span>        </span><span style=color:#bf616a>with</span><span>:
+</span><span>          </span><span style=color:#bf616a>tag_name</span><span>: </span><span style=color:#a3be8c>${{ github.ref }}
+</span><span>          </span><span style=color:#bf616a>release_name</span><span>: </span><span style=color:#a3be8c>Release ${{ github.ref }}
+</span><span>          </span><span style=color:#bf616a>draft</span><span>: </span><span style=color:#d08770>false
+</span><span>          </span><span style=color:#bf616a>prerelease</span><span>: </span><span style=color:#d08770>false
+</span><span>{% </span><span style=color:#a3be8c>endraw %</span><span>}
+</span></code></pre><h2 id=build-and-upload>Build and upload</h2><p>This is the final step. I won't dive into the details too much because you will have your own build scenarios. But here are a couple of things to highlight:<ul><li>The build jobs will have <code>create_release</code> as a dependency.<li>The output of <code>create_release</code> is used in the last "upload step".</ul><p>You can get more details on assets uploads <a href=https://github.com/actions/upload-release-asset>here</a>.<pre class=language-yaml data-lang=yaml style=color:#c0c5ce;background-color:#2b303b><code class=language-yaml data-lang=yaml><span>{% </span><span style=color:#a3be8c>raw %</span><span>}
+</span><span style=color:#65737e># ...
+</span><span>  </span><span style=color:#bf616a>release_assets</span><span>:
+</span><span>    </span><span style=color:#bf616a>name</span><span>: </span><span style=color:#a3be8c>Release assets
+</span><span>    </span><span style=color:#bf616a>needs</span><span>: </span><span style=color:#a3be8c>create_release </span><span style=color:#65737e># we need to know the upload URL
+</span><span>    </span><span style=color:#bf616a>runs-on</span><span>: </span><span style=color:#a3be8c>${{ matrix.config.os }} </span><span style=color:#65737e># we run many different builds
+</span><span>    </span><span style=color:#bf616a>strategy</span><span>:
+</span><span>      </span><span style=color:#65737e># just an example matrix
+</span><span>      </span><span style=color:#bf616a>matrix</span><span>:
+</span><span>        </span><span style=color:#bf616a>config</span><span>:
+</span><span>          - </span><span style=color:#bf616a>os</span><span>: </span><span style=color:#a3be8c>ubuntu-latest
+</span><span>          - </span><span style=color:#bf616a>os</span><span>: </span><span style=color:#a3be8c>macos-latest
+</span><span>          - </span><span style=color:#bf616a>os</span><span>: </span><span style=color:#a3be8c>windows-latest
+</span><span>    </span><span style=color:#bf616a>steps</span><span>:
+</span><span>      </span><span style=color:#65737e># checkout of cource
+</span><span>      - </span><span style=color:#bf616a>name</span><span>: </span><span style=color:#a3be8c>Checkout code
+</span><span>        </span><span style=color:#bf616a>uses</span><span>: </span><span style=color:#a3be8c>actions/checkout@v1
+</span><span>      </span><span style=color:#65737e># ... whatever build and packaging steps you need here
+</span><span>      </span><span style=color:#65737e># and finally do an upload!
+</span><span>      - </span><span style=color:#bf616a>name</span><span>: </span><span style=color:#a3be8c>Upload release assets
+</span><span>        </span><span style=color:#bf616a>uses</span><span>: </span><span style=color:#a3be8c>actions/upload-release-asset@v1
+</span><span>        </span><span style=color:#bf616a>env</span><span>:
+</span><span>          </span><span style=color:#bf616a>GITHUB_TOKEN</span><span>: </span><span style=color:#a3be8c>${{ secrets.GITHUB_TOKEN }}
+</span><span>        </span><span style=color:#bf616a>with</span><span>:
+</span><span>          </span><span style=color:#bf616a>upload_url</span><span>: </span><span style=color:#a3be8c>${{ needs.create_release.outputs.upload_url }}
+</span><span>          </span><span style=color:#65737e># This is how it will be named on the release page. Put hatever name
+</span><span>          </span><span style=color:#65737e># you like, remember that they need to be different for each platform.
+</span><span>          </span><span style=color:#65737e># You can choose any build matrix parameters. For Rust I use the
+</span><span>          </span><span style=color:#65737e># target triple.
+</span><span>          </span><span style=color:#bf616a>asset_name</span><span>: </span><span style=color:#a3be8c>program-name-${{ matrix.config.os }}
+</span><span>          </span><span style=color:#65737e># The path to the file you want to upload.
+</span><span>          </span><span style=color:#bf616a>asset_path</span><span>: </span><span style=color:#a3be8c>./path/to/your/file
+</span><span>          </span><span style=color:#65737e># probably you will need to change it, but most likely you are
+</span><span>          </span><span style=color:#65737e># uploading a binary file
+</span><span>          </span><span style=color:#bf616a>asset_content_type</span><span>: </span><span style=color:#a3be8c>application/octet-stream
+</span><span>{% </span><span style=color:#a3be8c>endraw %</span><span>}
+</span></code></pre><p>A note on executable formats: if you are building for Windows and uploading an <code>.exe</code> you can use two different steps for uploading the executable. One should have <code>if: matrix.config.os == 'windows-latest'</code> and asset path <code>asset_path: ./path/to/your/file.exe</code>. For *nix operating systems that usually are not using extensions for executables, use <code>if: matrix.config.os != 'windows-latest'</code>. This is a very useful trick overall when creating jobs that should handle multiple platforms.</div></article></main><footer><hr><div id=footer-container><p>Made using <a rel="noopener noreferrer" href=https://github.com/Speyll/anemone target=_blank>anemone</a> Zola theme.<p><a title="face icons" href=https://www.flaticon.com/free-icons/face>Face icons created by Freepik - Flaticon</a><p>© 2018-2025 Eugene Babichenko</div></footer><script defer src=https://eugene-babichenko.github.io/js/script.js></script>

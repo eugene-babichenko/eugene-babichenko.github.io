@@ -1,0 +1,85 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="width=device-width,initial-scale=1.0" name=viewport><meta content="index, follow" name=robots><link href=https://eugene-babichenko.github.io/rss.xml rel=alternate title=RSS type=application/rss+xml><title>Eugene Babichenko | Publishing AUR packages from GitHub Actions</title><link as=style href=https://eugene-babichenko.github.io/css/style.css rel=preload><link crossorigin href=https://raw.githack.com/Speyll/suCSS/main/reset-min.css rel=stylesheet><link crossorigin href=https://raw.githack.com/Speyll/suCSS/main/suCSS-min.css rel=stylesheet><link href=https://eugene-babichenko.github.io/css/style.css rel=stylesheet><link href=https://eugene-babichenko.github.io/css/custom.css rel=stylesheet><link href=https://eugene-babichenko.github.io/favicon.ico rel=icon><body><nav id=nav-bar><a href=/> /home/ </a><a href=/blog> /blog/ </a><a href=https://github.com/eugene-babichenko> /github/ </a><a href=https://standwithukraine.com.ua/> /🇺🇦 Support Ukraine/ </a><div aria-label="Toggle theme" class=theme-toggle data-icon-base=https://eugene-babichenko.github.io/icons.svg data-icon-dark=#darkMode data-icon-light=#lightMode data-sound-src=https://eugene-babichenko.github.io/click.ogg id=theme-toggle role=button tabindex=0><svg class=icon><use id=theme-icon></use></svg></div></nav><main><article class=post><header class=post-header><time datetime=2024-11-05>Published on: <span class=accent-data>2024-11-05</span> </time><h1>Publishing AUR packages from GitHub Actions</h1></header><div class=toc-container><h2>Table of content</h2><ul><li><a href=https://eugene-babichenko.github.io/blog/github-actions-aur/#prerequisites>Prerequisites</a><li><a href=https://eugene-babichenko.github.io/blog/github-actions-aur/#setting-up-ssh-keys>Setting up SSH keys</a><li><a href=https://eugene-babichenko.github.io/blog/github-actions-aur/#the-scripting>The scripting</a> <ul><li><a href=https://eugene-babichenko.github.io/blog/github-actions-aur/#installing-dependencies>Installing dependencies</a><li><a href=https://eugene-babichenko.github.io/blog/github-actions-aur/#dealing-with-users>Dealing with users</a><li><a href=https://eugene-babichenko.github.io/blog/github-actions-aur/#ssh-configuration>SSH configuration</a><li><a href=https://eugene-babichenko.github.io/blog/github-actions-aur/#pushing-the-actual-update>Pushing the actual update</a><li><a href=https://eugene-babichenko.github.io/blog/github-actions-aur/#the-final-script>The final script</a></ul><li><a href=https://eugene-babichenko.github.io/blog/github-actions-aur/#setting-up-the-github-action>Setting up the GitHub Action</a></ul></div><div class=post-content><p>In this post we will discuss automated publishing of updates to AUR packages from GitHub Actions.<p>The live and slightly more complicated version of this can be seen at https://github.com/eugene-babichenko/fixit/blob/master/.github/workflows/release.yml<h2 id=prerequisites>Prerequisites</h2><ul><li>You already have an AUR repository.<li>You are somewhat familiar with GitHub Actions.<li>You have a script that generates the <code>PKGBUILD</code> file for your releases. Here we will refer to it as <code>./generate-pkgbuild</code>.<li>You tag your releases in the format of <code>v&LTversion_number></code>.</ul><h2 id=setting-up-ssh-keys>Setting up SSH keys</h2><p>It's better to have a separate SSH key for your automation, so let's generate it:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>ssh-keygen -t</span><span> ed25519</span><span style=color:#bf616a> -f</span><span> github-aur
+</span></code></pre><p>Now let's add this key to your AUR account. Go to https://aur.archlinux.org/, log in, click on "My Account" and in "SSH Public Key" add a new line with your new public key:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>cat</span><span> github-aur.pub
+</span></code></pre><p>Now we have to deal with the secret key. Go to <code>https://github.com/&LTusername>/&LTrepo>/settings/secrets/actions</code> and add a new secret named <code>AUR_SSH_KEY</code> and paste the contents of our private key here:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>cat</span><span> github-aur
+</span></code></pre><h2 id=the-scripting>The scripting</h2><p>We are going to run our stuff inside an Arch Linux docker container. I'll show how to set that up later. For now, let's deal with the script.<h3 id=installing-dependencies>Installing dependencies</h3><p>First, let's install our dependencies (add any other dependencies here as well):<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>pacman -Syu --noconfirm
+</span><span style=color:#bf616a>pacman -S --noconfirm</span><span> openssh git
+</span></code></pre><p>And now some trickery. We would need to use <code>makepkg</code> which cannot run under root. And this is everything the container would provide to us. So let's create a user first:<h3 id=dealing-with-users>Dealing with users</h3><pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>useradd -m -G</span><span> wheel runner
+</span><span style=color:#65737e># We need everything to be passwordless
+</span><span style=color:#96b5b4>echo </span><span>"</span><span style=color:#a3be8c>%wheel ALL=(ALL) NOPASSWD: ALL</span><span>" >> /etc/sudoers
+</span></code></pre><p>Now let's transfer the ownership of our files to our new user:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>chown -R</span><span> runner:runner .
+</span></code></pre><p>From now on everything is going to be run under <code>su runner -c '...'</code>.<h3 id=ssh-configuration>SSH configuration</h3><p>First, install our key into the system:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>mkdir -p ~</span><span>/.ssh
+</span><span style=color:#96b5b4>echo </span><span>"$</span><span style=color:#a3be8c>{</span><span style=color:#bf616a>{ secrets.AUR_SSH_KEY </span><span style=color:#a3be8c>}}</span><span>" > </span><span style=color:#bf616a>~</span><span>/.ssh/aur
+</span><span style=color:#65737e># Set the correct permissions for the key
+</span><span style=color:#bf616a>chmod</span><span> 600 </span><span style=color:#bf616a>~</span><span>/.ssh/aur
+</span></code></pre><p>Then, set up the SSH config:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#96b5b4>echo </span><span>"</span><span style=color:#a3be8c>Host aur.archlinux.org</span><span>" >> </span><span style=color:#bf616a>~</span><span>/.ssh/config
+</span><span style=color:#96b5b4>echo </span><span>"</span><span style=color:#a3be8c>  IdentityFile ~/.ssh/aur</span><span>" >> </span><span style=color:#bf616a>~</span><span>/.ssh/config
+</span><span style=color:#96b5b4>echo </span><span>"</span><span style=color:#a3be8c>  User aur</span><span>" >> </span><span style=color:#bf616a>~</span><span>/.ssh/config
+</span></code></pre><p>And finally, add AUR to <code>known_hosts</code>:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>ssh-keyscan -H</span><span> aur.archlinux.org >> </span><span style=color:#bf616a>~</span><span>/.ssh/known_hosts
+</span></code></pre><h3 id=pushing-the-actual-update>Pushing the actual update</h3><p>Next, clone your AUR repo:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>git</span><span> clone ssh://aur@aur.archlinux.org/&LTpackage_name>.git aur
+</span></code></pre><p>Generate <code>PKGBUILD</code>, <code>.SRCINFO</code> and test your package:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#65737e># Grab the version number from the git tag
+</span><span style=color:#bf616a>VERSION</span><span>=$</span><span style=color:#a3be8c>{</span><span style=color:#bf616a>GITHUB_REF</span><span>#</span><span style=color:#a3be8c>refs/tags/v}
+</span><span style=color:#bf616a>./generate-pkgbuild </span><span>$</span><span style=color:#bf616a>VERSION
+</span><span style=color:#bf616a>makepkg --printsrcinfo </span><span>> .SRCINFO
+</span><span style=color:#bf616a>makepkg
+</span><span style=color:#bf616a>makepkg --install
+</span></code></pre><p>Set up git and push our updated package:<pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>cp</span><span> PKGBUILD .SRCINFO aur/
+</span><span style=color:#96b5b4>cd</span><span> aur
+</span><span style=color:#bf616a>git</span><span> config user.name "</span><span style=color:#a3be8c>github-actions[bot]</span><span>"
+</span><span style=color:#bf616a>git</span><span> config user.email "</span><span style=color:#a3be8c>github-actions[bot]@users.noreply.github.com</span><span>"
+</span><span style=color:#bf616a>git</span><span> add PKGBUILD .SRCINFO
+</span><span style=color:#bf616a>git</span><span> commit</span><span style=color:#bf616a> -m </span><span>"</span><span style=color:#a3be8c>release </span><span>$</span><span style=color:#bf616a>VERSION</span><span>"
+</span><span style=color:#bf616a>git</span><span> push origin master
+</span></code></pre><h3 id=the-final-script>The final script</h3><pre class=language-bash data-lang=bash style=color:#c0c5ce;background-color:#2b303b><code class=language-bash data-lang=bash><span style=color:#bf616a>pacman -Syu --noconfirm
+</span><span style=color:#bf616a>pacman -S --noconfirm</span><span> openssh git
+</span><span>
+</span><span style=color:#bf616a>useradd -m -G</span><span> wheel runner
+</span><span style=color:#96b5b4>echo </span><span>"</span><span style=color:#a3be8c>%wheel ALL=(ALL) NOPASSWD: ALL</span><span>" >> /etc/sudoers
+</span><span>
+</span><span style=color:#bf616a>chown -R</span><span> runner:runner .
+</span><span>
+</span><span style=color:#bf616a>su</span><span> runner</span><span style=color:#bf616a> -c </span><span>'
+</span><span style=color:#a3be8c>    VERSION=${GITHUB_REF#refs/tags/v}
+</span><span style=color:#a3be8c>
+</span><span style=color:#a3be8c>    mkdir -p ~/.ssh
+</span><span style=color:#a3be8c>    echo "${{ secrets.AUR_SSH_KEY }}" > ~/.ssh/aur
+</span><span style=color:#a3be8c>    chmod 600 ~/.ssh/aur
+</span><span style=color:#a3be8c>    echo "Host aur.archlinux.org" >> ~/.ssh/config
+</span><span style=color:#a3be8c>    echo "  IdentityFile ~/.ssh/aur" >> ~/.ssh/config
+</span><span style=color:#a3be8c>    echo "  User aur" >> ~/.ssh/config
+</span><span style=color:#a3be8c>    ssh-keyscan -H aur.archlinux.org >> ~/.ssh/known_hosts
+</span><span style=color:#a3be8c>
+</span><span style=color:#a3be8c>    git clone ssh://aur@aur.archlinux.org/&LTyour-package>.git aur
+</span><span style=color:#a3be8c>
+</span><span style=color:#a3be8c>    ./generate-pkgbuild $VERSION
+</span><span style=color:#a3be8c>    makepkg --printsrcinfo > .SRCINFO
+</span><span style=color:#a3be8c>    makepkg
+</span><span style=color:#a3be8c>    makepkg --install
+</span><span style=color:#a3be8c>
+</span><span style=color:#a3be8c>    cp PKGBUILD .SRCINFO aur/
+</span><span style=color:#a3be8c>    cd aur
+</span><span style=color:#a3be8c>    git config user.name "github-actions[bot]"
+</span><span style=color:#a3be8c>    git config user.email "github-actions[bot]@users.noreply.github.com"
+</span><span style=color:#a3be8c>    git add PKGBUILD .SRCINFO
+</span><span style=color:#a3be8c>    git commit -m "release $VERSION"
+</span><span style=color:#a3be8c>    git push origin master
+</span><span>'
+</span></code></pre><h2 id=setting-up-the-github-action>Setting up the GitHub Action</h2><p>Create the action that will be triggered by our release tags:<pre class=language-yaml data-lang=yaml style=color:#c0c5ce;background-color:#2b303b><code class=language-yaml data-lang=yaml><span style=color:#bf616a>name</span><span>: </span><span style=color:#a3be8c>Release
+</span><span>
+</span><span style=color:#d08770>on</span><span>:
+</span><span>  </span><span style=color:#bf616a>push</span><span>:
+</span><span>    </span><span style=color:#bf616a>tags</span><span>:
+</span><span>      - "</span><span style=color:#a3be8c>v*</span><span>"
+</span></code></pre><p>And add a job that will run all of our scripting inside an Arch Linux container:<pre class=language-yaml data-lang=yaml style=color:#c0c5ce;background-color:#2b303b><code class=language-yaml data-lang=yaml><span style=color:#bf616a>jobs</span><span>:
+</span><span>  </span><span style=color:#bf616a>update-aur</span><span>:
+</span><span>    </span><span style=color:#bf616a>name</span><span>: </span><span style=color:#a3be8c>Update AUR repositories
+</span><span>    </span><span style=color:#bf616a>runs-on</span><span>: </span><span style=color:#a3be8c>ubuntu-latest
+</span><span>    </span><span style=color:#bf616a>container</span><span>:
+</span><span>      </span><span style=color:#bf616a>image</span><span>: </span><span style=color:#a3be8c>archlinux:latest
+</span><span>    </span><span style=color:#bf616a>steps</span><span>:
+</span><span>      - </span><span style=color:#bf616a>name</span><span>: </span><span style=color:#a3be8c>Checkout
+</span><span>        </span><span style=color:#bf616a>uses</span><span>: </span><span style=color:#a3be8c>actions/checkout@v4
+</span><span>
+</span><span>      - </span><span style=color:#bf616a>name</span><span>: </span><span style=color:#a3be8c>Update AUR
+</span><span>        </span><span style=color:#bf616a>run</span><span>: </span><span style=color:#b48ead>|
+</span><span style=color:#a3be8c>          &LTthe above script goes here>
+</span></code></pre><p>And that's it, now you can automatically publish your releases to AUR whenever you trigger a new GitHub release.</div></article></main><footer><hr><div id=footer-container><p>Made using <a rel="noopener noreferrer" href=https://github.com/Speyll/anemone target=_blank>anemone</a> Zola theme.<p><a title="face icons" href=https://www.flaticon.com/free-icons/face>Face icons created by Freepik - Flaticon</a><p>© 2018-2025 Eugene Babichenko</div></footer><script defer src=https://eugene-babichenko.github.io/js/script.js></script>

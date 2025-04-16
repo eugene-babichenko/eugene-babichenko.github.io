@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+    
+        <url>
+            <loc>https://eugene-babichenko.github.io/toolbox/</loc>
+            <lastmod>2024-06-16</lastmod>
+        </url>
+    
+    
+    
+        
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/stow-thy-dotfiles/</loc>
+                <lastmod>2025-04-15</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/neovim-env-filetype/</loc>
+                <lastmod>2025-04-10</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/rust-code-coverage-without-3rd-party-utilities/</loc>
+                <lastmod>2024-11-15</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/github-actions-aur/</loc>
+                <lastmod>2024-11-05</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/jekyll-to-zola/</loc>
+                <lastmod>2024-06-17</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2024/06/10/lua-config/</loc>
+                <lastmod>2024-06-10</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2024/06/03/wezterm-open-config/</loc>
+                <lastmod>2024-06-03</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2020/09/30/git-separate-personal-work-configs/</loc>
+                <lastmod>2020-09-30</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2020/05/09/github-actions-cross-platform-auto-releases/</loc>
+                <lastmod>2020-05-09</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2019/11/13/rust-popcount-intrinsics/</loc>
+                <lastmod>2019-11-13</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2019/09/28/nightly-versions-makefiles/</loc>
+                <lastmod>2019-09-28</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2019/06/13/terminal-setup/</loc>
+                <lastmod>2019-06-13</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2019/05/22/proc-macros-mixed-with-simple-crates/</loc>
+                <lastmod>2019-05-22</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2019/01/30/analyzing-metrics-from-influxdb-with-pandas/</loc>
+                <lastmod>2019-01-30</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2018/12/31/clion-and-docker/</loc>
+                <lastmod>2018-12-31</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2018/11/09/aiohttp-server-unclean-websocket-exit/</loc>
+                <lastmod>2018-11-09</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2018/11/08/rustfmt-git-hook/</loc>
+                <lastmod>2018-11-08</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2018/08/17/powerline-fonts-patching/</loc>
+                <lastmod>2018-08-17</lastmod>
+            </url>
+        
+            <url>
+                <loc>https://eugene-babichenko.github.io/blog/2018/08/11/tiny-docker-images/</loc>
+                <lastmod>2018-08-11</lastmod>
+            </url>
+        
+    
+</urlset>
