@@ -26,7 +26,7 @@ export RUSTFLAGS="-C instrument-coverage"
 cargo test # or cargo build, or cargo run
 ```
 
-If you check your project directory after running this, you will see one more
+If you check your project directory after running this, you will see one or more
 files that look like this:
 
 ```
