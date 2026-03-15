@@ -9,8 +9,8 @@ description = "Eugene's personal blog"
 minify_html = true
 author = "Eugene Babichenko"
 
-[markdown]
-highlight_code = true
+[markdown.highlighting]
+theme = "gruvbox-dark-medium"
 
 [extra]
 author = "Eugene Babichenko"
