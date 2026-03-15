@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+Allow: /
+Sitemap: https://eugene-babichenko.github.io/sitemap.xml
